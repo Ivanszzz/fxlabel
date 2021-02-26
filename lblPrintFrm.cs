@@ -28,6 +28,10 @@ namespace AHLabelPrint
         private Dictionary<string, JObject> enablePrintWorkcode = new Dictionary<string, JObject>();
         private List<LabelColumn> colList = new List<LabelColumn>();
         private TextBoxRemind remind = null;
+        private ArrayList selectRowIndexList = new ArrayList();
+        private int selectRowIndex = 0;
+        Boolean isBeforeOperation = true;
+        DateTime _dt = DateTime.Now;
         public lblPrintFrm()
         {
             InitializeComponent();
@@ -90,7 +94,6 @@ namespace AHLabelPrint
             ctrlObj.ValueMember = "Key";
         }
         
-
         private void loadPackageTypeComboxData(ComboBox ctrlObj)
         {
             ArrayList mylist = new ArrayList();
@@ -103,9 +106,33 @@ namespace AHLabelPrint
             ctrlObj.ValueMember = "Key";
         }
 
+        /// <summary>
+        /// 加载标签主界面查询树
+        /// </summary>
+        private void loadLabelCustomerSelectTree(List<LabelCustomer> list)
+        {
+            ArrayList factoryName = new ArrayList();
+            foreach(LabelCustomer item in list)
+            {
+                if(!factoryName.Contains(item.FactoryTitle))
+                    factoryName.Add(item.FactoryTitle);
+            }
+
+            for(int i = 0; i < factoryName.Count; i++)
+            {
+                TreeNode node = new TreeNode(factoryName[i].ToString());
+                foreach(LabelCustomer item in list)
+                {
+                    if (item.FactoryTitle == factoryName[i].ToString())
+                        node.Nodes.Add(GetTemplateType(item.TemplateType));
+                }
+                this.client_treeView.Nodes.Add(node);
+            }
+            this.client_treeView.Focus();
+        }
+
         private void loadLabelCustomerData(JObject searCondition)
         {
-            
             string returnMsg = string.Empty;
             string url = "/LabelCustomer/GetCustomerList";
             string body = JsonConvert.SerializeObject(searCondition);
@@ -117,6 +144,8 @@ namespace AHLabelPrint
             {
                 gdv_customer.Rows.Clear();
                 List<LabelCustomer> custList = JsonConvert.DeserializeObject<List<LabelCustomer>>(msgObj.Data.ToString());
+                if(this.client_treeView.Nodes.Count == 0)
+                    loadLabelCustomerSelectTree(custList);
                 DataGridViewRow viewRow = new DataGridViewRow();
                 int cellIndex = 0;
                 foreach (LabelCustomer item in custList)
@@ -160,7 +189,26 @@ namespace AHLabelPrint
             return title;
         }
 
-       
+        private string DisGetTemplateType(string templateName)
+        {
+            string title = string.Empty;
+            switch (templateName)
+            {
+                case "盒装":
+                    title = "box";
+                    break;
+                case "中箱":
+                    title = "inner";
+                    break;
+                case "外箱":
+                    title = "outter"; 
+                    break;
+                case "":
+                    title = "";
+                    break;
+            }
+            return title;
+        }
 
         private void loadExInputControl(string CustomerId,ComboBox combObj,Label lblObj,GroupBox grpbox)
         {
@@ -302,10 +350,16 @@ namespace AHLabelPrint
             }
         }
 
-
         private void txt_workcode_KeyUp(object sender, KeyEventArgs e)
         {
-            
+            DateTime _tempt = DateTime.Now;
+            TimeSpan ts = _tempt.Subtract(_dt);
+            if (ts.Milliseconds > 50)
+            {
+                if (txt_workcode.Text != "")
+                    MessageBox.Show("禁止手输!");
+                txt_workcode.Text = "";
+            }
         }
 
         private void comb_packageQty_SelectedIndexChanged(object sender, EventArgs e)
@@ -322,11 +376,11 @@ namespace AHLabelPrint
         private void btnPrint_Click(object sender, EventArgs e)
         {
             //打印处理，先获取或者控件输入值；
-            object printNameTemp = this.comb_printlist.SelectedItem;
-            object packageTypeTemp = comb_packagetype.SelectedItem;
-            object packageQtyTemp = comb_packageQty.SelectedItem;
-            bool mergin = chk_merginprint.Checked;
-            string printNum = txt_printNum.Text;
+            object printNameTemp = this.comb_printlist.SelectedItem;//打印机
+            object packageTypeTemp = comb_packagetype.SelectedItem;//包装类型
+            object packageQtyTemp = comb_packageQty.SelectedItem;//包装数量
+            bool mergin = chk_merginprint.Checked;//合批勾选
+            string printNum = txt_printNum.Text;//打印数量
 
             string selectedItem = string.Empty;
             string selectItemTemp;
@@ -387,9 +441,9 @@ namespace AHLabelPrint
                 }
             }
 
-            if (printNum == null || string.IsNullOrEmpty(printNum))
+            if (printNum == null || string.IsNullOrEmpty(printNum) || Convert.ToInt32(printNum)==0)
             {
-                MessageBox.Show("请输入打印数量");
+                MessageBox.Show("请输入正确的打印数量");
                 return;
             }
 
@@ -445,7 +499,8 @@ namespace AHLabelPrint
             printParamData.Add("packageType", packageType.Key.ToString());
             printParamData.Add("printNum", printNum.ToString());
             printParamData.Add("lbl_PackageQty", packageQtyTemp.ToString());
-            printParamData.Add("lbl_WorkCodeList", selectedItem.ToString());
+            //当开单即打标签时 工单取一级工单
+            printParamData.Add("lbl_WorkCodeList",isBeforeOperation ? this.dgv_workprintdetail.SelectedRows[0].Cells["workcode"].Value.ToString():selectedItem.ToString());
             printParamData.Add("CustomerId", CustomerId);
             printParamData.Add("lbl_SupplyCode", custObj.SupplierCode);
 
@@ -526,6 +581,13 @@ namespace AHLabelPrint
                     chklist_workcode.Items.Clear();
                     this.dgv_workprintdetail.Rows.Clear();
                     CalcMaxPrintNumer();
+                    if (isBeforeOperation)
+                    {
+                        this.txt_workcode.Text = selectedItem.ToString();
+                        selectRowIndexList.Clear();
+                        this.txt_workcode_KeyDown(sender, new KeyEventArgs(Keys.Enter));
+                        CalcMaxPrintNumer();
+                    }
                     //加载打印记录
                     this.btn_SearchRecord_Click(sender, e);
                 }
@@ -775,47 +837,63 @@ namespace AHLabelPrint
             return otherCtrlCheck;
         }
 
+        /// <summary>
+        /// 获取待打印的标签数据
+        /// </summary>
+        /// <param name="packageQtyTemp"></param>
+        /// <returns></returns>
         private JArray GetMerginData(object packageQtyTemp)
         {
             JArray merginData = new JArray();
             JObject merginItem = null;
-
-            //升序排序 则优先消耗数量小的工单
-            dgv_workprintdetail.Sort(dgv_workprintdetail.Columns["enablePrintQty"], ListSortDirection.Ascending);
             int consumeQty = 0;
             int enablePrintQtyTemp = 0;
             int packageQty = 0;
-            foreach (DataGridViewRow item in dgv_workprintdetail.Rows)
+            if (isBeforeOperation)
             {
                 merginItem = new JObject();
-                enablePrintQtyTemp = Convert.ToInt32(item.Cells["enablePrintQty"].Value.ToString());
+                enablePrintQtyTemp = Convert.ToInt32(this.dgv_workprintdetail.SelectedRows[0].Cells["enablePrintQty"].Value.ToString());
                 packageQty = Convert.ToInt32(packageQtyTemp.ToString());
-                merginItem.Add("orderDetailId", item.Cells["orderDetailId"].Value.ToString());
-                merginItem.Add("workcode", item.Cells["workcode"].Value.ToString());
-                //合批工单分别的打印数量
-                //若标签工单数量>合批工单的数量
-                //累计消耗打印数量小于标签数量时
-                if (this.chk_merginprint.Checked)
+                merginItem.Add("orderDetailId", this.dgv_workprintdetail.SelectedRows[0].Cells["orderDetailId"].Value.ToString());
+                merginItem.Add("workcode", this.dgv_workprintdetail.SelectedRows[0].Cells["workcode"].Value.ToString());
+                merginItem.Add("qty", packageQty.ToString());
+                merginData.Add(merginItem);
+            }
+            else
+            {
+                //升序排序 则优先消耗数量小的工单
+                dgv_workprintdetail.Sort(dgv_workprintdetail.Columns["enablePrintQty"], ListSortDirection.Ascending);
+                foreach (DataGridViewRow item in dgv_workprintdetail.Rows)
                 {
-                    if (consumeQty + enablePrintQtyTemp < packageQty && packageQty < enablePrintQtyTemp)
+                    merginItem = new JObject();
+                    enablePrintQtyTemp = Convert.ToInt32(item.Cells["enablePrintQty"].Value.ToString());
+                    packageQty = Convert.ToInt32(packageQtyTemp.ToString());
+                    merginItem.Add("orderDetailId", item.Cells["orderDetailId"].Value.ToString());
+                    merginItem.Add("workcode", item.Cells["workcode"].Value.ToString());
+                    //合批工单分别的打印数量
+                    //若标签工单数量>合批工单的数量
+                    //累计消耗打印数量小于标签数量时
+                    if (this.chk_merginprint.Checked)
                     {
-                        consumeQty = consumeQty + Convert.ToInt32(item.Cells["enablePrintQty"].Value.ToString());
-                        merginItem.Add("qty", item.Cells["enablePrintQty"].Value.ToString());
+                        if (consumeQty + enablePrintQtyTemp < packageQty && packageQty < enablePrintQtyTemp)
+                        {
+                            consumeQty = consumeQty + Convert.ToInt32(item.Cells["enablePrintQty"].Value.ToString());
+                            merginItem.Add("qty", item.Cells["enablePrintQty"].Value.ToString());
+                        }
+                        else
+                        {
+                            merginItem.Add("qty", (enablePrintQtyTemp - consumeQty).ToString());
+                        }
                     }
                     else
                     {
-                        merginItem.Add("qty", (enablePrintQtyTemp - consumeQty).ToString());
+                        if (packageQty <= enablePrintQtyTemp)
+                        {
+                            merginItem.Add("qty", packageQty.ToString());
+                        }
                     }
+                    merginData.Add(merginItem);
                 }
-                else
-                {
-                    if (packageQty <= enablePrintQtyTemp)
-                    {
-                        merginItem.Add("qty", packageQty.ToString());
-                    }
-                }
-                
-                merginData.Add(merginItem);
             }
 
             return merginData;
@@ -1116,6 +1194,7 @@ namespace AHLabelPrint
             searCondition.Add("CustTitle", this.txt_CustTitle.Text);
             DictionaryEntry selectItem =(DictionaryEntry) this.comb_lblcategory.SelectedItem;
             searCondition.Add("TemplateType", selectItem.Key.ToString());
+            searCondition.Add("TreeSelect", "");
             loadLabelCustomerData(searCondition);
         }
 
@@ -1378,26 +1457,133 @@ namespace AHLabelPrint
             }
         }
 
+        /// <summary>
+        /// 工单显示列表 删除事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dgv_workprintdetail_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
-            string workcode=this.dgv_workprintdetail.Rows[e.Row.Index].Cells[1].Value.ToString();
-            enablePrintWorkcode.Remove(workcode);
-            chklist_workcode.Items.Remove(workcode);
+            string workcode = this.dgv_workprintdetail.Rows[e.Row.Index].Cells[1].Value.ToString();
+            if (isBeforeOperation)
+            {
+                enablePrintWorkcode.Clear();
+                chklist_workcode.Items.Clear();
+            }
+            else
+            {
+                enablePrintWorkcode.Remove(workcode);
+                chklist_workcode.Items.Remove(workcode);
+            }
             CalcMaxPrintNumer();
         }
 
+        /// <summary>
+        /// 计算可打印数量
+        /// </summary>
         private void CalcMaxPrintNumer()
         {
             int maxPrintNum = 0;
             int totalEnableQty = 0;
             JObject workcodeObj = null;
-            foreach (var item in enablePrintWorkcode)
+
+            if (isBeforeOperation)
             {
-                workcodeObj = item.Value;
-                totalEnableQty = totalEnableQty + Convert.ToInt32(string.IsNullOrEmpty(workcodeObj["enablePrintQty"].ToString())?"0": workcodeObj["enablePrintQty"].ToString());
+                //var selected = this.dgv_workprintdetail.SelectedRows;
+                //if (selected.Count > 0)
+                //{
+                //    for (var i = 0; i < this.dgv_workprintdetail.Rows.Count; i++)
+                //    {
+                //        totalEnableQty = totalEnableQty + Convert.ToInt32(this.dgv_workprintdetail.Rows[i].Cells["enableprintqty"].Value.ToString());
+
+                //        if (selected[0].Cells["workcode"].Value.ToString().Equals(this.dgv_workprintdetail.Rows[i].Cells["workcode"].Value.ToString()))
+                //        {
+                //            break;
+                //        }
+                //    }
+                //}
+
+                for (var i = 0; i < this.dgv_workprintdetail.Rows.Count; i++)
+                {
+                    totalEnableQty = totalEnableQty + Convert.ToInt32(this.dgv_workprintdetail.Rows[i].Cells["enableprintqty"].Value.ToString());
+
+                    if (i==selectRowIndex)
+                    {
+                        break;
+                    }
+                }
             }
+            else
+            {
+                foreach (var item in enablePrintWorkcode)
+                {
+                    workcodeObj = item.Value;
+                    totalEnableQty = totalEnableQty + Convert.ToInt32(string.IsNullOrEmpty(workcodeObj["enablePrintQty"].ToString()) ? "0" : workcodeObj["enablePrintQty"].ToString());
+                }
+            }
+
             maxPrintNum = totalEnableQty / Convert.ToInt32(this.comb_packageQty.SelectedItem.ToString());
             this.txt_maxPrintNum.Text = maxPrintNum.ToString();
+            if (isBeforeOperation)
+                this.txt_printNum.Text = maxPrintNum.ToString();
+        }
+
+        /// <summary>
+        /// 工单显示列表 行点击事件 自动定位到当前该打印的工单
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgv_workprintdetail_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex > -1)
+            {
+                var selected = this.dgv_workprintdetail.SelectedRows;
+                if (selected.Count > 0)
+                {
+                    for (var i = 0; i < this.dgv_workprintdetail.Rows.Count; i++)
+                    {
+                        if (selected[0].Cells["workcode"].Value.ToString().Equals(this.dgv_workprintdetail.Rows[i].Cells["workcode"].Value.ToString()))
+                        {
+                            if (i != selectRowIndex)
+                            {
+                                this.dgv_workprintdetail.ClearSelection();
+                                this.dgv_workprintdetail.Rows[selectRowIndex].Selected = true;
+                                this.dgv_workprintdetail.CurrentCell = this.dgv_workprintdetail.Rows[selectRowIndex].Cells[1];
+                            }
+                        }
+                    }
+                }
+                CalcMaxPrintNumer();
+            }
+        }
+        
+        /// <summary>
+        /// 双击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgv_workprintdetail_DoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex > -1)
+            {
+                var selected = this.dgv_workprintdetail.SelectedRows;
+                if (selected.Count > 0)
+                {
+                    for (var i = 0; i < this.dgv_workprintdetail.Rows.Count; i++)
+                    {
+                        if (selected[0].Cells["workcode"].Value.ToString().Equals(this.dgv_workprintdetail.Rows[i].Cells["workcode"].Value.ToString()))
+                        {
+                            if (i != selectRowIndex)
+                            {
+                                this.dgv_workprintdetail.ClearSelection();
+                                this.dgv_workprintdetail.Rows[selectRowIndex].Selected = true;
+                                this.dgv_workprintdetail.CurrentCell = this.dgv_workprintdetail.Rows[selectRowIndex].Cells[1];
+                            }
+                        }
+                    }
+                }
+                CalcMaxPrintNumer();
+            }
         }
 
         /// <summary>
@@ -1817,12 +2003,18 @@ namespace AHLabelPrint
             tabControl1.SelectedIndex = 0;
         }
 
+        /// <summary>
+        /// 窗口关闭
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void lblPrintFrm_FormClosing(object sender, FormClosingEventArgs e)
         {
             Application.Exit();
         }
+        
         /// <summary>
-        /// 作废
+        /// 内箱作废申请 按钮点击事件
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1854,8 +2046,9 @@ namespace AHLabelPrint
                 }
             }
         }
+        
         /// <summary>
-        /// 破损补打
+        /// 内箱破损补打 按钮点击事件
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1868,6 +2061,12 @@ namespace AHLabelPrint
             }
         }
 
+        /// <summary>
+        /// 补打
+        /// </summary>
+        /// <param name="dgvObj"></param>
+        /// <param name="combObj"></param>
+        /// <returns></returns>
         private bool RePrint(DataGridView dgvObj,ComboBox combObj)
         {
             object printNameTemp = combObj.SelectedItem;
@@ -1894,11 +2093,11 @@ namespace AHLabelPrint
                 MessageBox.Show("申请审核中不能破损补打");
                 return false;
             }
-            //if (selRow.Cells[10].Value.ToString() != "可补打")
-            //{
-            //    MessageBox.Show("该标签未完成审批流程，不能补打。");
-            //    return false;
-            //}
+            if (selRow.Cells[10].Value.ToString() != "可补打")
+            {
+                MessageBox.Show("该标签未完成审批流程，不能补打。");
+                return false;
+            }
             //该标签还未打印，不能破损补打；
             DialogResult btnResult = MessageBox.Show("确定要破损补打该标签吗?", "提示", MessageBoxButtons.OKCancel);
             if (btnResult == DialogResult.OK)
@@ -1972,7 +2171,7 @@ namespace AHLabelPrint
         }
 
         /// <summary>
-        /// 外箱作废\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+        /// 外箱破损补打  按钮点击事件
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1984,8 +2183,9 @@ namespace AHLabelPrint
                 this.btn_outter_search_Click(sender, e);
             }
         }
+        
         /// <summary>
-        /// 外箱破损补打
+        /// 外箱作废申请  按钮点击事件
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -2016,6 +2216,11 @@ namespace AHLabelPrint
             }
         }
 
+        /// <summary>
+        /// 标签作废
+        /// </summary>
+        /// <param name="labelRecordIdList"></param>
+        /// <returns></returns>
         private bool DisablePrintRecord(List<string> labelRecordIdList)
         {
             string url = "/LabelPrint/DisablePrintRecord";
@@ -2034,6 +2239,12 @@ namespace AHLabelPrint
             }
             return true;
         }
+
+        /// <summary>
+        /// 内箱增加单箱数量 按钮点击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_packageQtyTemp_Click(object sender, EventArgs e)
         {
             string inputText = this.comb_packageQty.Text;
@@ -2045,6 +2256,11 @@ namespace AHLabelPrint
             }
         }
 
+        /// <summary>
+        /// 外箱增加单箱数量 按钮点击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_outter_packageQtyTemp_Click(object sender, EventArgs e)
         {
             string inputText = this.combo_outter_packQty.Text;
@@ -2055,11 +2271,24 @@ namespace AHLabelPrint
             }
         }
 
+        /// <summary>
+        /// 内箱标签作废 按钮点击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_disableApply_Click(object sender, EventArgs e)
         {
+            //判断当前是否可以作废
             SaveApply(this.gdvLblRecord,"disable", "标签作废是否继续?","box");
         }
 
+        /// <summary>
+        /// 标签申请 申请弹框
+        /// </summary>
+        /// <param name="dgvObj"></param>
+        /// <param name="applyType"></param>
+        /// <param name="confirmTip"></param>
+        /// <param name="boxType"></param>
         private void SaveApply(DataGridView dgvObj, string applyType,string confirmTip,string boxType)
         {
             DataGridViewSelectedRowCollection selectRowCol = dgvObj.SelectedRows;
@@ -2069,7 +2298,10 @@ namespace AHLabelPrint
                 return;
             }
             bool checkPass = true;
+            bool isUnusual = false;
             List<string> printRecordList = new List<string>();
+            List<string> isBeforeOperationWorkcode = new List<string>();
+            StringBuilder showWorkcode = new StringBuilder();
             foreach (DataGridViewRow selRow in selectRowCol)
             {
                 if (selRow.Cells[10].Value.ToString() == "申请中")
@@ -2084,19 +2316,49 @@ namespace AHLabelPrint
                     checkPass = false;
                     break;
                 }
+                if (isLabelBeforeOperation(selRow.Cells[3].Value.ToString()))
+                {
+                    if (!isBeforeOperationWorkcode.Contains(selRow.Cells[3].Value.ToString()))
+                    {
+                        isBeforeOperationWorkcode.Add(selRow.Cells[3].Value.ToString());
+                        showWorkcode.Append(selRow.Cells[3].Value.ToString() + ",");
+                    }
+                    isUnusual = true;
+                    continue;
+                }
                 printRecordList.Add(selRow.Cells[1].Value.ToString());
             }
-            if (!checkPass) return;
-            //DialogResult btnResult = MessageBox.Show(confirmTip, "提示", MessageBoxButtons.OKCancel);
-            //if (btnResult == DialogResult.OK)
-            //{
+            
+            foreach (String s in isBeforeOperationWorkcode)
+            {
+                foreach (DataGridViewRow row in dgvObj.Rows)
+                {
+                    if (row.Cells[3].Value.ToString() == s)
+                    {
+                        printRecordList.Add(row.Cells[1].Value.ToString());
+                    }
+                }
+            }
 
-            //}
+            if(isUnusual == true)
+            {
+                if (MessageBox.Show("工单" + showWorkcode + "需在开单时生成标签.作废此类工单的标签时,同批次的所有标签都将发起作废申请", "是否继续?", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
+                    checkPass = false;
+            }
+
+            if (!checkPass) return;
+            
             FrmApplyDialog frmApply = new FrmApplyDialog(printRecordList, applyType, boxType);
             frmApply.updateIt += new FrmApplyDialog.updateParentData(doSomething);
             frmApply.Show();
         }
 
+        /// <summary>
+        /// 调用不同包装的查询点击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <param name="boxType"></param>
         private void doSomething(object sender, EventArgs e,string boxType)
         {
             if (boxType == "box")
@@ -2110,11 +2372,21 @@ namespace AHLabelPrint
             
         }
 
+        /// <summary>
+        /// 内箱补打申请 按钮点击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_reprintApplay_Click(object sender, EventArgs e)
         {
             SaveApply(this.gdvLblRecord, "reprint", "确定标签需破损补打?", "box");
         }
 
+        /// <summary>
+        /// 工单输入框 按键按下事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txt_workcode_KeyDown(object sender, KeyEventArgs e)
         {
             if (!chklist_workcode.Items.Contains(workcode))
@@ -2127,69 +2399,316 @@ namespace AHLabelPrint
                     if (workcode != workcode.ToUpper())
                     {
                         MessageBox.Show("工单号必须为大写!");
+                        this.txt_workcode.Text = "";
                         return;
                     }
+
+                    isBeforeOperation = isLabelBeforeOperation(workcode);
+
+                    if (isBeforeOperation && (chklist_workcode.Items.Count>0 || this.dgv_workprintdetail.Rows.Count > 0))
+                    {
+                        MessageBox.Show("请先处理已扫入的工单!");
+                        this.txt_workcode.Text = "";
+                        return;
+                    }
+
+                    if (isBeforeOperation)
+                    {
+                        this.dgv_workprintdetail.MultiSelect = false;
+                        this.label5.Text = "扫入工单";
+                        this.comb_packageQty.Enabled = false;
+                        this.dgv_workprintdetail.RowHeadersVisible = false;
+                        this.dgv_workprintdetail.AllowUserToDeleteRows = false;
+                        this.btn_clear.Visible = true;
+                        this.label_printworkcode.Visible = true;
+                        this.textBox_printworkcode.Visible = true;
+                        this.txt_printNum.Enabled = false;
+                        this.chk_merginprint.Enabled = false;
+                        this.chklist_workcode.Enabled = false;
+                        this.dgv_workprintdetail.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                    }
+                    else
+                    {
+                        this.chklist_workcode.Enabled = true;
+                        this.comb_packageQty.Enabled = true;
+                        this.dgv_workprintdetail.RowHeadersVisible = true;
+                        this.label5.Text = "显示工单";
+                        this.dgv_workprintdetail.AllowUserToDeleteRows = true;
+                        this.btn_clear.Visible = false;
+                        this.label_printworkcode.Visible = false;
+                        this.textBox_printworkcode.Visible = false;
+                        this.txt_printNum.Enabled = true;
+                        this.chk_merginprint.Enabled = true;
+                        this.dgv_workprintdetail.MultiSelect = true;
+                        this.dgv_workprintdetail.SelectionMode = DataGridViewSelectionMode.RowHeaderSelect;
+                    }
+
                     string url = "/LabelPrint/GetWorkcodeInfo";
                     string returnMsg = string.Empty;
                     JObject reqData = new JObject();
                     reqData.Add("CustomerId", CustomerId);
                     reqData.Add("Workcode", workcode);
+                    reqData.Add("isBeforeOperation", isBeforeOperation.ToString());
                     string body = JsonConvert.SerializeObject(reqData);
                     returnMsg = AjaxHelper.ClientRequest(url, body);
 
-                    //{"IsSuccess":true,"Data":"{\"id\":\"726243\",\"cycle\":\"945Z\",\"workcode\":\"W-19111693-01-02\",\"enableprintqty\":\"2000\",\"printedqty\":\"0\",\"printedpages\":\"0\",\"goodqty\":\"2000\"}","Messaage":""}
                     ClientResponseMsg msgObj = JsonConvert.DeserializeObject<ClientResponseMsg>(returnMsg);
                     if (msgObj.IsSuccess)
                     {
-                        JObject workinfo = JsonConvert.DeserializeObject<JObject>(msgObj.Data.ToString());
-                        if (workinfo == null)
+                        JArray workinfos = JsonConvert.DeserializeObject<JArray>(msgObj.Data.ToString());
+                        if (workinfos == null)
                         {
                             MessageBox.Show("工单不存在");
+                            this.txt_workcode.Text = "";
                             return;
                         }
-                        int cellIndex = 0;
 
-                        if (!enablePrintWorkcode.ContainsKey(workcode))
+                        if(isBeforeOperation)
                         {
-                            enablePrintWorkcode.Add(workcode, workinfo);
-                            chklist_workcode.Items.Add(workcode, true);
+                            this.comb_packageQty.Items.Add(workinfos[0]["PackageMin"].ToString());
+                            this.comb_packageQty.SelectedItem = workinfos[0]["PackageMin"].ToString();
 
+                            this.dgv_workprintdetail.Columns[0].HeaderCell.Value = "";
+                            this.dgv_workprintdetail.Columns[1].HeaderCell.Value = "工单号";
+                            this.dgv_workprintdetail.Columns[2].HeaderCell.Value = "领取数量";
+                            this.dgv_workprintdetail.Columns[3].HeaderCell.Value = "已打印数量";
+                            this.dgv_workprintdetail.Columns[4].HeaderCell.Value = "已打印张数";
+                            this.dgv_workprintdetail.Columns[5].HeaderCell.Value = "可打印数量(余料)";
+                            this.dgv_workprintdetail.Columns[6].HeaderCell.Value = "当前工作站";
+                            this.dgv_workprintdetail.Columns[7].HeaderCell.Value = "客户料号";
+                        }
+                        else
+                        {
+                            this.dgv_workprintdetail.Columns[0].HeaderCell.Value = "";
+                            this.dgv_workprintdetail.Columns[1].HeaderCell.Value = "工单";
+                            this.dgv_workprintdetail.Columns[2].HeaderCell.Value = "良品数";
+                            this.dgv_workprintdetail.Columns[3].HeaderCell.Value = "已打印数量";
+                            this.dgv_workprintdetail.Columns[4].HeaderCell.Value = "已打印张数";
+                            this.dgv_workprintdetail.Columns[5].HeaderCell.Value = "可打印数量";
+                            this.dgv_workprintdetail.Columns[6].HeaderCell.Value = "工序";
+                            this.dgv_workprintdetail.Columns[7].HeaderCell.Value = "客户料号";
+                        }
+
+                        int cellIndex = 0;
+                        JObject workinfo = null;
+                        int rowIndex = 0;
+                        
+
+                        foreach(var item in workinfos)
+                        {
+                            cellIndex = 0;
+                            workinfo = (JObject)item;
                             DataGridViewRow viewRow = new DataGridViewRow();
+
+                            if (!enablePrintWorkcode.ContainsKey(workinfo["workcode"].ToString()))
+                            {
+                                enablePrintWorkcode.Add(workinfo["workcode"].ToString(), workinfo);
+                            }
+
+                            if (!chklist_workcode.Items.Contains(workcode))
+                            {
+                                chklist_workcode.Items.Add(workcode, true);
+                            }
+
                             viewRow.CreateCells(this.dgv_workprintdetail);
                             viewRow.Cells[cellIndex++].Value = workinfo["orderDetailId"];
-                            viewRow.Cells[cellIndex++].Value = workcode;
+                            viewRow.Cells[cellIndex++].Value = workinfo["workcode"];
                             viewRow.Cells[cellIndex++].Value = workinfo["goodQty"];
                             viewRow.Cells[cellIndex++].Value = workinfo["printedQty"];
                             viewRow.Cells[cellIndex++].Value = workinfo["printedPages"];
+                            if ("0" == workinfo["printedPages"].ToString())
+                                selectRowIndexList.Add(rowIndex);
                             viewRow.Cells[cellIndex++].Value = workinfo["enablePrintQty"];
                             viewRow.Cells[cellIndex++].Value = workinfo["ProgramName"];
                             viewRow.Cells[cellIndex++].Value = string.IsNullOrEmpty(workinfo["ClientCode2"].ToString()) ? "空" : workinfo["ClientCode2"];
+                            rowIndex++;
                             dgv_workprintdetail.Rows.Add(viewRow);
-
                             CalcMaxPrintNumer();
-
                             this.txt_workcode.Text = "";
                         }
+                        if (selectRowIndexList.Count == 0 && isBeforeOperation == true)
+                            MessageBox.Show("该大批次的所有标签均已打印完毕!");
+                        selectRowIndex = selectRowIndexList.Count > 0 ? int.Parse(selectRowIndexList[0].ToString()) : 0;
+                        CalcMaxPrintNumer();
+                        //if(this.dgv_workprintdetail.Rows[selectRowIndex].Cells["workcode"].Value.ToString() != this.chklist_workcode.Items[0].ToString())
+                        //{
+                        //    for (var i = 0; i < this.dgv_workprintdetail.Rows.Count; i++)
+                        //    {
+                        //        var a = this.dgv_workprintdetail.Rows[i].Cells["workcode"].Value.ToString();
+                        //        var b = this.chklist_workcode.Items[0].ToString();
+                        //        if (this.dgv_workprintdetail.Rows[i].Cells["workcode"].Value.ToString() == this.chklist_workcode.Items[0].ToString())
+                        //        {
+                        //            if (int.Parse(this.dgv_workprintdetail.Rows[i].Cells["printedPages"].Value.ToString()) > 0)
+                        //                MessageBox.Show("工单"+ this.chklist_workcode.Items[0].ToString()+"已打印完毕");
+                        //            else
+                        //                MessageBox.Show("请先打印工单" + this.dgv_workprintdetail[i, 1].ToString() + "标签");
+                        //        }
+                        //    }
+                        //}
+                        this.dgv_workprintdetail.Rows[selectRowIndex].Selected = true;
+                        this.textBox_printworkcode.Text = this.dgv_workprintdetail.Rows[selectRowIndex].Cells["workcode"].Value.ToString();
+                        this.dgv_workprintdetail.CurrentCell = this.dgv_workprintdetail.Rows[selectRowIndex].Cells[1];
                     }
                 }
+                _dt = DateTime.Now;
             }
         }
 
-        private void btn_outter_reprintapply_Click(object sender, EventArgs e)
+        /// <summary>
+        /// 是否上机前打标签 按照最小批次打标签
+        /// </summary>
+        /// <returns></returns>
+        private Boolean isLabelBeforeOperation(string workcode)
         {
-            SaveApply(this.dgv_outter_printRecordList, "reprint", "确定标签需破损补打?","outter");
+            string url = "/LabelPrint/GetIsBeforeOperation";
+            string returnMsg = string.Empty;
+            string res = string.Empty;
+            Boolean result_bool = false;
+            JObject reqData = new JObject();
+            reqData.Add("Workcode", workcode);
+            string body = JsonConvert.SerializeObject(reqData);
+            returnMsg = AjaxHelper.ClientRequest(url, body);
+            ClientResponseMsg msgObj = JsonConvert.DeserializeObject<ClientResponseMsg>(returnMsg);
+            if (msgObj.IsSuccess)
+            {
+                JObject result = JsonConvert.DeserializeObject<JObject>(msgObj.Data.ToString());
+                if (result.Count > 0)
+                {
+                    if ("1".Equals(result["result"].ToString()))
+                        result_bool = true;
+                }
+            }
+            return result_bool;
         }
 
+        /// <summary>
+        /// 外箱补打申请 按钮点击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_outter_reprintapply_Click(object sender, EventArgs e)
+        {
+            DataGridViewSelectedRowCollection selectRowCol = this.dgv_outter_printRecordList.SelectedRows;
+            if (selectRowCol.Count <= 0)
+            {
+                MessageBox.Show("请选择一条已打印的标签记录");
+            }
+            else
+            {
+                DataGridViewRow selRow = selectRowCol[0];
+                if (selRow.Cells[9].Value.ToString() == "未打印")
+                    MessageBox.Show("未打印状态不能申请破损补打");
+                else
+                    SaveApply(this.dgv_outter_printRecordList, "reprint", "确定标签需破损补打?", "outter");
+            }
+        }
+
+        /// <summary>
+        /// 外箱作废申请 按钮点击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_outter_disableapply_Click(object sender, EventArgs e)
         {
             SaveApply(this.dgv_outter_printRecordList, "disable", "标签作废是否继续?", "outter");
         }
 
+        /// <summary>
+        /// 更新模板 按钮点击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnRefreshTemplate_Click(object sender, EventArgs e)
         {
             PrintMessage pMsg = ReFreshTemplate(custObj);
             MessageBox.Show(pMsg.Message);
             tabControl1.SelectedIndex = 0;
+        }
+
+        /// <summary>
+        /// 清空
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_clear_Click(object sender, EventArgs e)
+        {
+            enablePrintWorkcode.Clear();
+            chklist_workcode.Items.Clear();
+            this.dgv_workprintdetail.Rows.Clear();
+            this.txt_workcode.Text = "";
+            this.textBox_printworkcode.Text = "";
+            selectRowIndexList.Clear();
+            loadPackageQtyComboxData(this.comb_packageQty, custObj);
+            CalcMaxPrintNumer();
+        }
+
+        /// <summary>
+        /// 双击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void client_treeView_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.client_treeView_MouseClick(sender, e);
+        }
+
+        /// <summary>
+        /// 节点展开后
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void client_treeView_AfterExpand(object sender, TreeViewEventArgs e)
+        {
+            JObject searCondition = new JObject();
+            searCondition.Add("PageSize", "100");
+            searCondition.Add("PageNum", 1);
+            searCondition.Add("CustCode", "");
+            searCondition.Add("CustTitle", "");
+            searCondition.Add("TemplateType", "");
+            searCondition.Add("TreeSelect", e.Node.Text);
+            loadLabelCustomerData(searCondition);
+
+            foreach (TreeNode tn in this.client_treeView.Nodes)
+            {
+                if (tn.Text != e.Node.Text)
+                    tn.Collapse();
+            }
+        }
+
+        private void client_treeView_MouseClick(object sender, MouseEventArgs e)
+        {
+            string[] selected = this.client_treeView.SelectedNode.FullPath.Split('\\');
+            if (selected.Length > 1)
+            {
+                JObject searCondition = new JObject();
+                searCondition.Add("PageSize", "100");
+                searCondition.Add("PageNum", 1);
+                searCondition.Add("CustCode", "");
+                searCondition.Add("CustTitle", "");
+                searCondition.Add("TemplateType", DisGetTemplateType(selected.Length > 1 ? selected[1] : ""));
+                searCondition.Add("TreeSelect", selected[0]);
+                loadLabelCustomerData(searCondition);
+            }
+            else
+            {
+                Boolean IsNotExpanded = true;
+                foreach (TreeNode tn in this.client_treeView.Nodes)
+                {
+                    if (tn.IsExpanded == true)
+                        IsNotExpanded = false;
+                }
+                if (IsNotExpanded == true)
+                {
+                    JObject searCondition = new JObject();
+                    searCondition.Add("PageSize", "100");
+                    searCondition.Add("PageNum", 1);
+                    searCondition.Add("CustCode", "");
+                    searCondition.Add("CustTitle", "");
+                    searCondition.Add("TemplateType", "");
+                    searCondition.Add("TreeSelect", "");
+                    loadLabelCustomerData(searCondition);
+                }
+            }
         }
     }
 }

@@ -1,0 +1,1 @@
+[2020/8/20 14:21:59]:[{"Text":"您的打印机不支持此文档中指定的纸张大小。\r\n除非调整纸张大小设置，否则您将无法进行打印。\r\n\r\n您可以使用尽可能接近的设置自动调整纸张大小设置，\r\n或者稍后使用“页面设置”对话框自行解决这一问题。\r\n\r\n打印机:\t\tMicrosoft Print to PDF\r\n文档:\tyadaInnerBox.btw","ID":3707,"Severity":1,"Category":"打印机","Verification":{"Problem":"","Fields":"","Result":"自动调整页面设置","AutoFix":""},"Source":0}]_0
