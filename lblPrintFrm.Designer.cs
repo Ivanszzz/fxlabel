@@ -76,6 +76,14 @@
             this.label11 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.dgv_workprintdetail = new System.Windows.Forms.DataGridView();
+            this.OrderDetailId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.workcode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.goodqty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.printedqty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.printedpages = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.enableprintqty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.gongxu = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.chklist_workcode = new System.Windows.Forms.CheckedListBox();
             this.btnRefreshTemplate = new System.Windows.Forms.Button();
             this.btnPrint = new System.Windows.Forms.Button();
@@ -101,6 +109,20 @@
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.gboxLblRecord = new System.Windows.Forms.GroupBox();
             this.gdvLblRecord = new System.Windows.Forms.DataGridView();
+            this.Column11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PrintRecordId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PRCustomerId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PRWorkCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PRTagQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PRCycle = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PRClientCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PRSerialNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PRMapped = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PrintState = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PRCreator = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PRCreateTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.dtpk_enddate = new System.Windows.Forms.DateTimePicker();
             this.dtpk_begindate = new System.Windows.Forms.DateTimePicker();
@@ -183,28 +205,6 @@
             this.comb_outter_printState = new System.Windows.Forms.ComboBox();
             this.comb_outter_printrecordState = new System.Windows.Forms.ComboBox();
             this.skinEngine1 = new Sunisoft.IrisSkin.SkinEngine();
-            this.OrderDetailId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.workcode = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.goodqty = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.printedqty = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.printedpages = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.enableprintqty = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.gongxu = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PrintRecordId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PRCustomerId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PRWorkCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PRTagQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PRCycle = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PRClientCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PRSerialNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PRMapped = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PrintState = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PRCreator = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PRCreateTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -718,6 +718,7 @@
             // 
             this.dgv_workprintdetail.AllowUserToAddRows = false;
             this.dgv_workprintdetail.AllowUserToOrderColumns = true;
+            this.dgv_workprintdetail.AllowUserToResizeRows = false;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -754,6 +755,69 @@
             this.dgv_workprintdetail.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_workprintdetail_CellClick);
             this.dgv_workprintdetail.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_workprintdetail_DoubleClick);
             this.dgv_workprintdetail.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dgv_workprintdetail_UserDeletingRow);
+            // 
+            // OrderDetailId
+            // 
+            this.OrderDetailId.HeaderText = "ID";
+            this.OrderDetailId.Name = "OrderDetailId";
+            this.OrderDetailId.ReadOnly = true;
+            this.OrderDetailId.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.OrderDetailId.Visible = false;
+            // 
+            // workcode
+            // 
+            this.workcode.HeaderText = "工单";
+            this.workcode.Name = "workcode";
+            this.workcode.ReadOnly = true;
+            this.workcode.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.workcode.Width = 120;
+            // 
+            // goodqty
+            // 
+            this.goodqty.HeaderText = "良品数";
+            this.goodqty.Name = "goodqty";
+            this.goodqty.ReadOnly = true;
+            this.goodqty.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.goodqty.Width = 80;
+            // 
+            // printedqty
+            // 
+            this.printedqty.HeaderText = "已打印数量";
+            this.printedqty.Name = "printedqty";
+            this.printedqty.ReadOnly = true;
+            this.printedqty.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // printedpages
+            // 
+            this.printedpages.HeaderText = "已打印张数";
+            this.printedpages.Name = "printedpages";
+            this.printedpages.ReadOnly = true;
+            this.printedpages.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.printedpages.Width = 90;
+            // 
+            // enableprintqty
+            // 
+            this.enableprintqty.HeaderText = "可打印数量";
+            this.enableprintqty.Name = "enableprintqty";
+            this.enableprintqty.ReadOnly = true;
+            this.enableprintqty.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.enableprintqty.Width = 110;
+            // 
+            // gongxu
+            // 
+            this.gongxu.HeaderText = "工序";
+            this.gongxu.Name = "gongxu";
+            this.gongxu.ReadOnly = true;
+            this.gongxu.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.gongxu.Width = 80;
+            // 
+            // Column2
+            // 
+            this.Column2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Column2.HeaderText = "客户料号";
+            this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
+            this.Column2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // chklist_workcode
             // 
@@ -1008,6 +1072,107 @@
             this.gdvLblRecord.Size = new System.Drawing.Size(1296, 221);
             this.gdvLblRecord.TabIndex = 0;
             // 
+            // Column11
+            // 
+            this.Column11.Frozen = true;
+            this.Column11.HeaderText = "";
+            this.Column11.Name = "Column11";
+            this.Column11.ReadOnly = true;
+            this.Column11.Width = 50;
+            // 
+            // PrintRecordId
+            // 
+            this.PrintRecordId.HeaderText = "Id";
+            this.PrintRecordId.Name = "PrintRecordId";
+            this.PrintRecordId.ReadOnly = true;
+            this.PrintRecordId.Visible = false;
+            // 
+            // PRCustomerId
+            // 
+            this.PRCustomerId.HeaderText = "客户标签Id";
+            this.PRCustomerId.Name = "PRCustomerId";
+            this.PRCustomerId.ReadOnly = true;
+            this.PRCustomerId.Visible = false;
+            // 
+            // PRWorkCode
+            // 
+            this.PRWorkCode.HeaderText = "工单号";
+            this.PRWorkCode.Name = "PRWorkCode";
+            this.PRWorkCode.ReadOnly = true;
+            this.PRWorkCode.Width = 110;
+            // 
+            // PRTagQty
+            // 
+            this.PRTagQty.HeaderText = "标签数量";
+            this.PRTagQty.Name = "PRTagQty";
+            this.PRTagQty.ReadOnly = true;
+            this.PRTagQty.Width = 80;
+            // 
+            // PRCycle
+            // 
+            this.PRCycle.HeaderText = "奈印周期";
+            this.PRCycle.Name = "PRCycle";
+            this.PRCycle.ReadOnly = true;
+            // 
+            // PRClientCode
+            // 
+            this.PRClientCode.HeaderText = "客户料号";
+            this.PRClientCode.Name = "PRClientCode";
+            this.PRClientCode.ReadOnly = true;
+            this.PRClientCode.Width = 130;
+            // 
+            // PRSerialNumber
+            // 
+            this.PRSerialNumber.HeaderText = "流水号";
+            this.PRSerialNumber.Name = "PRSerialNumber";
+            this.PRSerialNumber.ReadOnly = true;
+            this.PRSerialNumber.Width = 80;
+            // 
+            // PRMapped
+            // 
+            this.PRMapped.HeaderText = "记录状态";
+            this.PRMapped.Name = "PRMapped";
+            this.PRMapped.ReadOnly = true;
+            this.PRMapped.Width = 80;
+            // 
+            // PrintState
+            // 
+            this.PrintState.HeaderText = "打印状态";
+            this.PrintState.Name = "PrintState";
+            this.PrintState.ReadOnly = true;
+            this.PrintState.Width = 80;
+            // 
+            // Column7
+            // 
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Red;
+            this.Column7.DefaultCellStyle = dataGridViewCellStyle3;
+            this.Column7.HeaderText = "申请状态";
+            this.Column7.Name = "Column7";
+            this.Column7.ReadOnly = true;
+            this.Column7.Width = 80;
+            // 
+            // PRCreator
+            // 
+            this.PRCreator.HeaderText = "创建人";
+            this.PRCreator.Name = "PRCreator";
+            this.PRCreator.ReadOnly = true;
+            this.PRCreator.Width = 80;
+            // 
+            // PRCreateTime
+            // 
+            this.PRCreateTime.HeaderText = "创建时间";
+            this.PRCreateTime.Name = "PRCreateTime";
+            this.PRCreateTime.ReadOnly = true;
+            this.PRCreateTime.Width = 120;
+            // 
+            // Column10
+            // 
+            this.Column10.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Column10.HeaderText = "标签二维码标识";
+            this.Column10.Name = "Column10";
+            this.Column10.ReadOnly = true;
+            // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.dtpk_enddate);
@@ -1119,9 +1284,8 @@
             this.btn_disable.Name = "btn_disable";
             this.btn_disable.Size = new System.Drawing.Size(79, 23);
             this.btn_disable.TabIndex = 2;
-            this.btn_disable.Text = "作废";
+            this.btn_disable.Text = "单张作废";
             this.btn_disable.UseVisualStyleBackColor = true;
-            this.btn_disable.Visible = false;
             this.btn_disable.Click += new System.EventHandler(this.btn_disable_Click);
             // 
             // btn_reprintApplay
@@ -1831,168 +1995,6 @@
             this.skinEngine1.InactiveCaptionColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.skinEngine1.SerialNumber = "";
             this.skinEngine1.SkinFile = null;
-            // 
-            // OrderDetailId
-            // 
-            this.OrderDetailId.HeaderText = "ID";
-            this.OrderDetailId.Name = "OrderDetailId";
-            this.OrderDetailId.ReadOnly = true;
-            this.OrderDetailId.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.OrderDetailId.Visible = false;
-            // 
-            // workcode
-            // 
-            this.workcode.HeaderText = "工单";
-            this.workcode.Name = "workcode";
-            this.workcode.ReadOnly = true;
-            this.workcode.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.workcode.Width = 120;
-            // 
-            // goodqty
-            // 
-            this.goodqty.HeaderText = "良品数";
-            this.goodqty.Name = "goodqty";
-            this.goodqty.ReadOnly = true;
-            this.goodqty.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.goodqty.Width = 80;
-            // 
-            // printedqty
-            // 
-            this.printedqty.HeaderText = "已打印数量";
-            this.printedqty.Name = "printedqty";
-            this.printedqty.ReadOnly = true;
-            this.printedqty.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // printedpages
-            // 
-            this.printedpages.HeaderText = "已打印张数";
-            this.printedpages.Name = "printedpages";
-            this.printedpages.ReadOnly = true;
-            this.printedpages.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.printedpages.Width = 90;
-            // 
-            // enableprintqty
-            // 
-            this.enableprintqty.HeaderText = "可打印数量";
-            this.enableprintqty.Name = "enableprintqty";
-            this.enableprintqty.ReadOnly = true;
-            this.enableprintqty.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.enableprintqty.Width = 110;
-            // 
-            // gongxu
-            // 
-            this.gongxu.HeaderText = "工序";
-            this.gongxu.Name = "gongxu";
-            this.gongxu.ReadOnly = true;
-            this.gongxu.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.gongxu.Width = 80;
-            // 
-            // Column2
-            // 
-            this.Column2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Column2.HeaderText = "客户料号";
-            this.Column2.Name = "Column2";
-            this.Column2.ReadOnly = true;
-            this.Column2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // Column11
-            // 
-            this.Column11.Frozen = true;
-            this.Column11.HeaderText = "";
-            this.Column11.Name = "Column11";
-            this.Column11.ReadOnly = true;
-            this.Column11.Width = 50;
-            // 
-            // PrintRecordId
-            // 
-            this.PrintRecordId.HeaderText = "Id";
-            this.PrintRecordId.Name = "PrintRecordId";
-            this.PrintRecordId.ReadOnly = true;
-            // 
-            // PRCustomerId
-            // 
-            this.PRCustomerId.HeaderText = "客户标签Id";
-            this.PRCustomerId.Name = "PRCustomerId";
-            this.PRCustomerId.ReadOnly = true;
-            this.PRCustomerId.Visible = false;
-            // 
-            // PRWorkCode
-            // 
-            this.PRWorkCode.HeaderText = "工单号";
-            this.PRWorkCode.Name = "PRWorkCode";
-            this.PRWorkCode.ReadOnly = true;
-            this.PRWorkCode.Width = 110;
-            // 
-            // PRTagQty
-            // 
-            this.PRTagQty.HeaderText = "标签数量";
-            this.PRTagQty.Name = "PRTagQty";
-            this.PRTagQty.ReadOnly = true;
-            this.PRTagQty.Width = 80;
-            // 
-            // PRCycle
-            // 
-            this.PRCycle.HeaderText = "奈印周期";
-            this.PRCycle.Name = "PRCycle";
-            this.PRCycle.ReadOnly = true;
-            // 
-            // PRClientCode
-            // 
-            this.PRClientCode.HeaderText = "客户料号";
-            this.PRClientCode.Name = "PRClientCode";
-            this.PRClientCode.ReadOnly = true;
-            // 
-            // PRSerialNumber
-            // 
-            this.PRSerialNumber.HeaderText = "流水号";
-            this.PRSerialNumber.Name = "PRSerialNumber";
-            this.PRSerialNumber.ReadOnly = true;
-            this.PRSerialNumber.Width = 80;
-            // 
-            // PRMapped
-            // 
-            this.PRMapped.HeaderText = "记录状态";
-            this.PRMapped.Name = "PRMapped";
-            this.PRMapped.ReadOnly = true;
-            this.PRMapped.Width = 80;
-            // 
-            // PrintState
-            // 
-            this.PrintState.HeaderText = "打印状态";
-            this.PrintState.Name = "PrintState";
-            this.PrintState.ReadOnly = true;
-            this.PrintState.Width = 80;
-            // 
-            // Column7
-            // 
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Red;
-            this.Column7.DefaultCellStyle = dataGridViewCellStyle3;
-            this.Column7.HeaderText = "申请状态";
-            this.Column7.Name = "Column7";
-            this.Column7.ReadOnly = true;
-            this.Column7.Width = 80;
-            // 
-            // PRCreator
-            // 
-            this.PRCreator.HeaderText = "创建人";
-            this.PRCreator.Name = "PRCreator";
-            this.PRCreator.ReadOnly = true;
-            this.PRCreator.Width = 80;
-            // 
-            // PRCreateTime
-            // 
-            this.PRCreateTime.HeaderText = "创建时间";
-            this.PRCreateTime.Name = "PRCreateTime";
-            this.PRCreateTime.ReadOnly = true;
-            this.PRCreateTime.Width = 120;
-            // 
-            // Column10
-            // 
-            this.Column10.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Column10.HeaderText = "标签二维码标识";
-            this.Column10.Name = "Column10";
-            this.Column10.ReadOnly = true;
             // 
             // lblPrintFrm
             // 

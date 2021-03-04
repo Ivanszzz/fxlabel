@@ -14,4 +14,5 @@ D:\lblprint\obj\Debug\AHLabelPrint.application
 D:\lblprint\obj\Debug\AHLabelPrint.csproj.CopyComplete
 D:\lblprint\obj\Debug\AHLabelPrint.exe
 D:\lblprint\obj\Debug\AHLabelPrint.pdb
+D:\lblprint\obj\Debug\AHLabelPrint.FrmLableDisableDialog.resources
 D:\lblprint\obj\Debug\AHLabelPrint.csprojAssemblyReference.cache

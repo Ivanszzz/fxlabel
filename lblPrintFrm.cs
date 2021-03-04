@@ -2020,31 +2020,34 @@ namespace AHLabelPrint
         /// <param name="e"></param>
         private void btn_disable_Click(object sender, EventArgs e)
         {
-            DataGridViewSelectedRowCollection selectRowCol = this.gdvLblRecord.SelectedRows;
-            if (selectRowCol.Count <= 0)
-            {
-                MessageBox.Show("请选择报废的标签记录");
-                return;
-            }
-            List<string> printRecordList = new List<string>();
-            foreach (DataGridViewRow selRow in selectRowCol)
-            {
-                printRecordList.Add(selRow.Cells[1].Value.ToString());
-            }
+            //DataGridViewSelectedRowCollection selectRowCol = this.gdvLblRecord.SelectedRows;
+            //if (selectRowCol.Count <= 0)
+            //{
+            //    MessageBox.Show("请选择报废的标签记录");
+            //    return;
+            //}
+            //List<string> printRecordList = new List<string>();
+            //foreach (DataGridViewRow selRow in selectRowCol)
+            //{
+            //    printRecordList.Add(selRow.Cells[1].Value.ToString());
+            //}
 
-            DialogResult btnResult = MessageBox.Show("确定要作废选中的标签吗?", "提示", MessageBoxButtons.OKCancel);
-            if (btnResult == DialogResult.OK)
-            {
-                //加载打印记录
-                DictionaryEntry recordStateSelItem = (DictionaryEntry)this.comb_recordState.SelectedItem;
-                bool result=DisablePrintRecord(printRecordList);
-                if (result)
-                {
-                    MessageBox.Show("操作成功.");
-                    //加载打印记录
-                    btn_SearchRecord_Click(sender,e);
-                }
-            }
+            //DialogResult btnResult = MessageBox.Show("确定要作废选中的标签吗?", "提示", MessageBoxButtons.OKCancel);
+            //if (btnResult == DialogResult.OK)
+            //{
+            //    //加载打印记录
+            //    DictionaryEntry recordStateSelItem = (DictionaryEntry)this.comb_recordState.SelectedItem;
+            //    bool result=DisablePrintRecord(printRecordList);
+            //    if (result)
+            //    {
+            //        MessageBox.Show("操作成功.");
+            //        //加载打印记录
+            //        btn_SearchRecord_Click(sender,e);
+            //    }
+            //}
+            FrmLableDisableDialog frmApply = new FrmLableDisableDialog();
+            frmApply.updateIt += new FrmLableDisableDialog.updateParentData(doSomething);
+            frmApply.Show();
         }
         
         /// <summary>
@@ -2316,15 +2319,18 @@ namespace AHLabelPrint
                     checkPass = false;
                     break;
                 }
-                if (isLabelBeforeOperation(selRow.Cells[3].Value.ToString()))
+                if(applyType == "disable")
                 {
-                    if (!isBeforeOperationWorkcode.Contains(selRow.Cells[3].Value.ToString()))
+                    if (isLabelBeforeOperation(selRow.Cells[3].Value.ToString()))
                     {
-                        isBeforeOperationWorkcode.Add(selRow.Cells[3].Value.ToString());
-                        showWorkcode.Append(selRow.Cells[3].Value.ToString() + ",");
+                        if (!isBeforeOperationWorkcode.Contains(selRow.Cells[3].Value.ToString()))
+                        {
+                            isBeforeOperationWorkcode.Add(selRow.Cells[3].Value.ToString());
+                            showWorkcode.Append(selRow.Cells[3].Value.ToString() + ",");
+                        }
+                        isUnusual = true;
+                        continue;
                     }
-                    isUnusual = true;
-                    continue;
                 }
                 printRecordList.Add(selRow.Cells[1].Value.ToString());
             }
@@ -2333,7 +2339,7 @@ namespace AHLabelPrint
             {
                 foreach (DataGridViewRow row in dgvObj.Rows)
                 {
-                    if (row.Cells[3].Value.ToString() == s)
+                    if (row.Cells[3].Value.ToString() == s && row.Cells[10].Value.ToString() == "" )
                     {
                         printRecordList.Add(row.Cells[1].Value.ToString());
                     }
@@ -2470,10 +2476,10 @@ namespace AHLabelPrint
 
                             this.dgv_workprintdetail.Columns[0].HeaderCell.Value = "";
                             this.dgv_workprintdetail.Columns[1].HeaderCell.Value = "工单号";
-                            this.dgv_workprintdetail.Columns[2].HeaderCell.Value = "领取数量";
+                            this.dgv_workprintdetail.Columns[2].HeaderCell.Value = "开单数量";
                             this.dgv_workprintdetail.Columns[3].HeaderCell.Value = "已打印数量";
                             this.dgv_workprintdetail.Columns[4].HeaderCell.Value = "已打印张数";
-                            this.dgv_workprintdetail.Columns[5].HeaderCell.Value = "可打印数量(余料)";
+                            this.dgv_workprintdetail.Columns[5].HeaderCell.Value = "可打印数量";
                             this.dgv_workprintdetail.Columns[6].HeaderCell.Value = "当前工作站";
                             this.dgv_workprintdetail.Columns[7].HeaderCell.Value = "客户料号";
                         }
