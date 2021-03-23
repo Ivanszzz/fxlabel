@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,6 +6,9 @@ using System.Windows.Forms;
 
 namespace AHLabelPrint
 {
+    /// <summary>
+    /// 输入框记忆
+    /// </summary>
     class TextBoxRemind
     {
         private string[] array = null;
@@ -16,10 +17,10 @@ namespace AHLabelPrint
 
         public void InitAutoCompleteCustomSource(TextBox text,String boxname)
         {
-            if (false == System.IO.Directory.Exists(workPath + "/TextRemind/"))
+            if (false == Directory.Exists(workPath + "/TextRemind/"))
             {
                 //创建文件夹
-                System.IO.Directory.CreateDirectory(workPath + "/TextRemind/");
+                Directory.CreateDirectory(workPath + "/TextRemind/");
             }
             textPath = Path.Combine(workPath, "TextRemind/"+ boxname + ".txt");
             array = ReadText();
@@ -55,10 +56,10 @@ namespace AHLabelPrint
         public void Remind(string str,String boxname)
         {
             StreamWriter streamWriter = null;
-            if (false == System.IO.Directory.Exists(workPath+ "/TextRemind/"))
+            if (false == Directory.Exists(workPath+ "/TextRemind/"))
             {
                 //创建文件夹
-                System.IO.Directory.CreateDirectory(workPath + "/TextRemind/");
+                Directory.CreateDirectory(workPath + "/TextRemind/");
             }
             textPath = Path.Combine(workPath, "TextRemind/" + boxname + ".txt");
             try

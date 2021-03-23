@@ -3,15 +3,11 @@ using Seagull.BarTender.Print;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Xml;
 
 namespace AHLabelPrint
 {
-	public class PackageTempletLabel
+    public class PackageTempletLabel
 	{
 		/// <summary>
 		/// 宽度

@@ -139,6 +139,7 @@
             this.btn_SearchRecord = new System.Windows.Forms.Button();
             this.txt_search_workcode = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
+            this.label_user = new System.Windows.Forms.Label();
             this.tbPageOutter = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
@@ -204,6 +205,7 @@
             this.label35 = new System.Windows.Forms.Label();
             this.comb_outter_printState = new System.Windows.Forms.ComboBox();
             this.comb_outter_printrecordState = new System.Windows.Forms.ComboBox();
+            this.label_outuser = new System.Windows.Forms.Label();
             this.skinEngine1 = new Sunisoft.IrisSkin.SkinEngine();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -1023,6 +1025,7 @@
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.Controls.Add(this.gboxLblRecord, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.groupBox4, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.label_user, 0, 2);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -1280,7 +1283,7 @@
             // 
             // btn_disable
             // 
-            this.btn_disable.Location = new System.Drawing.Point(1054, 9);
+            this.btn_disable.Location = new System.Drawing.Point(1054, 10);
             this.btn_disable.Name = "btn_disable";
             this.btn_disable.Size = new System.Drawing.Size(79, 23);
             this.btn_disable.TabIndex = 2;
@@ -1333,6 +1336,15 @@
             this.label17.Size = new System.Drawing.Size(47, 12);
             this.label17.TabIndex = 0;
             this.label17.Text = "工单号:";
+            // 
+            // label_user
+            // 
+            this.label_user.AutoSize = true;
+            this.label_user.Location = new System.Drawing.Point(3, 286);
+            this.label_user.Name = "label_user";
+            this.label_user.Size = new System.Drawing.Size(47, 12);
+            this.label_user.TabIndex = 4;
+            this.label_user.Text = "label41";
             // 
             // tbPageOutter
             // 
@@ -1419,7 +1431,7 @@
             this.chkworkcodelist.FormattingEnabled = true;
             this.chkworkcodelist.Location = new System.Drawing.Point(98, 41);
             this.chkworkcodelist.Name = "chkworkcodelist";
-            this.chkworkcodelist.Size = new System.Drawing.Size(395, 52);
+            this.chkworkcodelist.Size = new System.Drawing.Size(395, 84);
             this.chkworkcodelist.TabIndex = 36;
             // 
             // label40
@@ -1503,12 +1515,12 @@
             // 
             this.dgv_outter_printdetail.AllowUserToAddRows = false;
             this.dgv_outter_printdetail.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv_outter_printdetail.Location = new System.Drawing.Point(98, 97);
+            this.dgv_outter_printdetail.Location = new System.Drawing.Point(98, 129);
             this.dgv_outter_printdetail.Name = "dgv_outter_printdetail";
             this.dgv_outter_printdetail.ReadOnly = true;
             this.dgv_outter_printdetail.RowHeadersWidth = 20;
             this.dgv_outter_printdetail.RowTemplate.Height = 23;
-            this.dgv_outter_printdetail.Size = new System.Drawing.Size(683, 89);
+            this.dgv_outter_printdetail.Size = new System.Drawing.Size(683, 57);
             this.dgv_outter_printdetail.TabIndex = 32;
             this.dgv_outter_printdetail.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dgv_outter_printdetail_UserDeletingRow);
             // 
@@ -1569,7 +1581,7 @@
             // label26
             // 
             this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(33, 97);
+            this.label26.Location = new System.Drawing.Point(33, 129);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(59, 12);
             this.label26.TabIndex = 15;
@@ -1644,6 +1656,7 @@
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel3.Controls.Add(this.groupBox7, 0, 1);
             this.tableLayoutPanel3.Controls.Add(this.groupBox8, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this.label_outuser, 0, 2);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
@@ -1987,6 +2000,15 @@
             this.comb_outter_printrecordState.Size = new System.Drawing.Size(58, 20);
             this.comb_outter_printrecordState.TabIndex = 5;
             // 
+            // label_outuser
+            // 
+            this.label_outuser.AutoSize = true;
+            this.label_outuser.Location = new System.Drawing.Point(3, 290);
+            this.label_outuser.Name = "label_outuser";
+            this.label_outuser.Size = new System.Drawing.Size(47, 12);
+            this.label_outuser.TabIndex = 4;
+            this.label_outuser.Text = "label41";
+            // 
             // skinEngine1
             // 
             this.skinEngine1.@__DrawButtonFocusRectangle = true;
@@ -2031,6 +2053,7 @@
             this.splitContainer3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_workprintdetail)).EndInit();
             this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
             this.gboxLblRecord.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gdvLblRecord)).EndInit();
             this.groupBox4.ResumeLayout(false);
@@ -2048,6 +2071,7 @@
             this.splitContainer4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_outter_printdetail)).EndInit();
             this.tableLayoutPanel3.ResumeLayout(false);
+            this.tableLayoutPanel3.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_outter_printRecordList)).EndInit();
             this.groupBox8.ResumeLayout(false);
@@ -2231,6 +2255,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn PRCreator;
         private System.Windows.Forms.DataGridViewTextBoxColumn PRCreateTime;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column10;
+        private System.Windows.Forms.Label label_user;
+        private System.Windows.Forms.Label label_outuser;
     }
 }
 

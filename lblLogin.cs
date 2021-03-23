@@ -51,7 +51,7 @@ namespace AHLabelPrint
                 bf.Serialize(fs, users);
             }
 
-            string url = "/LabelCustomer/LabelLogin";
+            string url = "/LabelPrint/LabelLogin";
             string returnMsg = string.Empty;
             JObject reqData = new JObject();
             reqData.Add("UserName", "");

@@ -11,17 +11,17 @@
     <deploymentProvider codebase="http://192.168.60.209:8090/AHLabelPrint.application" />
   </deployment>
   <compatibleFrameworks xmlns="urn:schemas-microsoft-com:clickonce.v2">
-    <framework targetVersion="4.0" profile="Full" supportedRuntime="4.0.30319" />
+    <framework targetVersion="4.5" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="AHLabelPrint.exe.manifest" size="6278">
+    <dependentAssembly dependencyType="install" codebase="AHLabelPrint.exe.manifest" size="5505">
       <assemblyIdentity name="AHLabelPrint.exe" version="1.0.0.10" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="x86" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
-        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>SOomKmVqMiiCg9PlLx+RRfq42Ws=</dsig:DigestValue>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>Y5d/U0TdpwM8OzMq4PMjhyqFAApUc7TUBoJv7zrZMnM=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

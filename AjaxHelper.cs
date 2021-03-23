@@ -1,13 +1,9 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
 
 namespace AHLabelPrint
 {
-	public class AjaxHelper
+    public class AjaxHelper
 	{
         /// <summary>
         /// 客户端请求数据

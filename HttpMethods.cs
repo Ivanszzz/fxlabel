@@ -6,7 +6,6 @@ using System.Net;
 using System.Text;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
-using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 
 namespace AHLabelPrint

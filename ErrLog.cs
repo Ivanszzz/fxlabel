@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,7 +7,7 @@ namespace AHLabelPrint
 {
     public class Logger
     {
-        private static string logdir = System.AppDomain.CurrentDomain.BaseDirectory + "/log/";
+        private static string logdir = AppDomain.CurrentDomain.BaseDirectory + "/log/";
         private static string logfilename = logdir + DateTime.Now.ToString("yyyy-MM-dd") + ".txt";
         private static Logger logger = null;
         private static object _lock = new object();
@@ -35,9 +33,9 @@ namespace AHLabelPrint
                 {
                     FileStream _filestream;
                     if (!File.Exists(logfilename))
-                        _filestream = new FileStream(logfilename, System.IO.FileMode.Create);
+                        _filestream = new FileStream(logfilename, FileMode.Create);
                     else
-                        _filestream = new FileStream(Logger.logfilename, FileMode.Append, FileAccess.Write);
+                        _filestream = new FileStream(logfilename, FileMode.Append, FileAccess.Write);
 
                     using (_filestream)
                     {
@@ -46,7 +44,6 @@ namespace AHLabelPrint
                             sw.WriteLine("[{0}]:{1}_{2}", DateTime.Now.ToString(), content, i++);
                         }
                     }
-                    //System.Threading.Thread.Sleep(1000*4);
                 }
             });
 

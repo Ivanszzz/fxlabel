@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Seagull.BarTender.Print;
 using System;
@@ -7,15 +6,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.Security;
 using System.Windows.Forms;
-using static System.Windows.Forms.CheckedListBox;
 
 namespace AHLabelPrint
 {
@@ -35,7 +30,7 @@ namespace AHLabelPrint
         public lblPrintFrm()
         {
             InitializeComponent();
-            skinEngine1.SkinFile = System.Environment.CurrentDirectory + "\\Skins\\DiamondBlue.ssk";
+            skinEngine1.SkinFile = Environment.CurrentDirectory + "\\Skins\\DiamondBlue.ssk";
         }
 
         private void lblPrintFrm_Load(object sender, EventArgs e)
@@ -44,7 +39,8 @@ namespace AHLabelPrint
             loadPackageTypeComboxData(this.comb_lblcategory);
             //loadPackageQtyComboxData(this.comb_packageQty);
             JObject searCondition = new JObject();
-            loadLabelCustomerData(searCondition);
+            //loadLabelCustomerData(searCondition);
+            loadAllLabelCustomerData();
         }
 
         private void loadUserInfo()
@@ -131,10 +127,26 @@ namespace AHLabelPrint
             this.client_treeView.Focus();
         }
 
+        private void loadAllLabelCustomerData()
+        {
+            string returnMsg = string.Empty;
+            string url = "/LabelPrint/GetCustomerList";
+            string body = JsonConvert.SerializeObject(new JObject());
+            returnMsg = AjaxHelper.ClientRequest(url, body);
+            ClientResponseMsg msgObj = JsonConvert.DeserializeObject<ClientResponseMsg>(returnMsg);
+            if (msgObj.IsSuccess)
+            {
+                gdv_customer.Rows.Clear();
+                List<LabelCustomer> custList = JsonConvert.DeserializeObject<List<LabelCustomer>>(msgObj.Data.ToString());
+                if (this.client_treeView.Nodes.Count == 0)
+                    loadLabelCustomerSelectTree(custList);
+            }
+        }
+
         private void loadLabelCustomerData(JObject searCondition)
         {
             string returnMsg = string.Empty;
-            string url = "/LabelCustomer/GetCustomerList";
+            string url = "/LabelPrint/GetCustomerList";
             string body = JsonConvert.SerializeObject(searCondition);
             returnMsg = AjaxHelper.ClientRequest(url, body);
             ClientResponseMsg msgObj = JsonConvert.DeserializeObject<ClientResponseMsg>(returnMsg);
@@ -144,8 +156,8 @@ namespace AHLabelPrint
             {
                 gdv_customer.Rows.Clear();
                 List<LabelCustomer> custList = JsonConvert.DeserializeObject<List<LabelCustomer>>(msgObj.Data.ToString());
-                if(this.client_treeView.Nodes.Count == 0)
-                    loadLabelCustomerSelectTree(custList);
+                //if(this.client_treeView.Nodes.Count == 0)
+                //    loadLabelCustomerSelectTree(custList);
                 DataGridViewRow viewRow = new DataGridViewRow();
                 int cellIndex = 0;
                 foreach (LabelCustomer item in custList)
@@ -320,7 +332,7 @@ namespace AHLabelPrint
             string body = string.Empty;
             reqData.Add("CustomerId", CustomerId);
             body = JsonConvert.SerializeObject(reqData);
-            string customerInfo = AjaxHelper.ClientRequest("/LabelCustomer/GetCustomerInfo", body);
+            string customerInfo = AjaxHelper.ClientRequest("/LabelPrint/GetCustomerInfo", body);
             msgObj = JsonConvert.DeserializeObject<ClientResponseMsg>(customerInfo);
             if (msgObj.IsSuccess)
             {
@@ -499,7 +511,7 @@ namespace AHLabelPrint
             printParamData.Add("packageType", packageType.Key.ToString());
             printParamData.Add("printNum", printNum.ToString());
             printParamData.Add("lbl_PackageQty", packageQtyTemp.ToString());
-            //当开单即打标签时 工单取一级工单
+            //当开单即打标签时
             printParamData.Add("lbl_WorkCodeList",isBeforeOperation ? this.dgv_workprintdetail.SelectedRows[0].Cells["workcode"].Value.ToString():selectedItem.ToString());
             printParamData.Add("CustomerId", CustomerId);
             printParamData.Add("lbl_SupplyCode", custObj.SupplierCode);
@@ -990,7 +1002,7 @@ namespace AHLabelPrint
             }
 
             //保存打印记录
-            string url = "/LabelCustomer/RefreshTemplate";
+            string url = "/LabelPrint/RefreshTemplate";
             string returnMsg = string.Empty;
             JObject postBody = new JObject();
             postBody.Add("CustomerId", customer.Id);
@@ -1203,7 +1215,9 @@ namespace AHLabelPrint
             //当选择的打印标签类型为 box 盒装标签时
             string templateType= this.gdv_customer.Rows[e.RowIndex].Cells["TemplateTypeCode"].Value.ToString();
             string keyColumn = this.gdv_customer.Rows[e.RowIndex].Cells["Id"].Value.ToString();
-            string mappingChildId= this.gdv_customer.Rows[e.RowIndex].Cells["MappingChildId"].Value.ToString();
+            string mappingChildId= this.gdv_customer.Rows[e.RowIndex].Cells["MappingChildId"].Value.ToString(); 
+            this.label_user.Text = Program.logName + '/' + this.gdv_customer.Rows[e.RowIndex].Cells["CustTitle"].Value.ToString() + '/' + this.gdv_customer.Rows[e.RowIndex].Cells["TemplateType"].Value.ToString();
+            this.label_outuser.Text = Program.logName + '/' + this.gdv_customer.Rows[e.RowIndex].Cells["CustTitle"].Value.ToString() + '/' + this.gdv_customer.Rows[e.RowIndex].Cells["TemplateType"].Value.ToString();
             if ("box".Equals(templateType))
             {
                 CustomerId = keyColumn;
@@ -2697,23 +2711,23 @@ namespace AHLabelPrint
             }
             else
             {
-                Boolean IsNotExpanded = true;
-                foreach (TreeNode tn in this.client_treeView.Nodes)
-                {
-                    if (tn.IsExpanded == true)
-                        IsNotExpanded = false;
-                }
-                if (IsNotExpanded == true)
-                {
-                    JObject searCondition = new JObject();
-                    searCondition.Add("PageSize", "100");
-                    searCondition.Add("PageNum", 1);
-                    searCondition.Add("CustCode", "");
-                    searCondition.Add("CustTitle", "");
-                    searCondition.Add("TemplateType", "");
-                    searCondition.Add("TreeSelect", "");
-                    loadLabelCustomerData(searCondition);
-                }
+                //Boolean IsNotExpanded = true;
+                //foreach (TreeNode tn in this.client_treeView.Nodes)
+                //{
+                //    if (tn.IsExpanded == true)
+                //        IsNotExpanded = false;
+                //}
+                //if (IsNotExpanded == true)
+                //{
+                //    JObject searCondition = new JObject();
+                //    searCondition.Add("PageSize", "100");
+                //    searCondition.Add("PageNum", 1);
+                //    searCondition.Add("CustCode", "");
+                //    searCondition.Add("CustTitle", "");
+                //    searCondition.Add("TemplateType", "");
+                //    searCondition.Add("TreeSelect", "");
+                //    loadLabelCustomerData(searCondition);
+                //}
             }
         }
     }
