@@ -55,11 +55,11 @@ namespace AHLabelPrint
                             return;
                         }
                             
-                        if (labelinfo["s_AuditOper"].ToString() != "" && labelinfo["s_AuditOper"].ToString() != null && labelinfo["s_AuditOper"].ToString() != "normal")
-                        {
-                            MessageBox.Show("该标签存在未补打的记录或者未完成的审批流程!");
-                            return;
-                        }
+                        //if (labelinfo["s_AuditOper"].ToString() != "" && labelinfo["s_AuditOper"].ToString() != null && labelinfo["s_AuditOper"].ToString() != "normal")
+                        //{
+                        //    MessageBox.Show("该标签存在未补打的记录或者未完成的审批流程!");
+                        //    return;
+                        //}
 
                         if (labelCodeList.Contains(labelinfo["s_Id"].ToString()))
                         {

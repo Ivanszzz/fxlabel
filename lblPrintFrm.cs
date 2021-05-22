@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.Security;
@@ -89,6 +90,20 @@ namespace AHLabelPrint
             ctrlObj.DisplayMember = "Value";
             ctrlObj.ValueMember = "Key";
         }
+
+        private void loadlabelStateComboxData(ComboBox ctrlObj)
+        {
+            ArrayList mylist = new ArrayList();
+            mylist.Add(new DictionaryEntry("all", "全部"));
+            mylist.Add(new DictionaryEntry("nodisable", "正常"));
+            mylist.Add(new DictionaryEntry("checking", "申请中"));
+            mylist.Add(new DictionaryEntry("reprint", "可补打"));
+            mylist.Add(new DictionaryEntry("reprinted", "已补打"));
+            mylist.Add(new DictionaryEntry("disable", "已作废"));
+            ctrlObj.DataSource = mylist;
+            ctrlObj.DisplayMember = "Value";
+            ctrlObj.ValueMember = "Key";
+        }
         
         private void loadPackageTypeComboxData(ComboBox ctrlObj)
         {
@@ -108,7 +123,8 @@ namespace AHLabelPrint
         private void loadLabelCustomerSelectTree(List<LabelCustomer> list)
         {
             ArrayList factoryName = new ArrayList();
-            foreach(LabelCustomer item in list)
+            ArrayList templateType = new ArrayList();
+            foreach (LabelCustomer item in list)
             {
                 if(!factoryName.Contains(item.FactoryTitle))
                     factoryName.Add(item.FactoryTitle);
@@ -120,7 +136,9 @@ namespace AHLabelPrint
                 foreach(LabelCustomer item in list)
                 {
                     if (item.FactoryTitle == factoryName[i].ToString())
+                    {
                         node.Nodes.Add(GetTemplateType(item.TemplateType));
+                    }
                 }
                 this.client_treeView.Nodes.Add(node);
             }
@@ -1137,8 +1155,9 @@ namespace AHLabelPrint
             {
                 prtMsg.Result = false;
                 prtMsg.Message = "模板文件不存在";
-                return prtMsg;
+                //return prtMsg;
             }
+            downTemplateFileName = Path.GetFileName(ConfigurationManager.AppSettings["MESServerUrl"] + customer.LabelTemplateUrl);
             PackageTempletLabel pkgTmpLabel = new PackageTempletLabel();
             pkgTmpLabel.Width = customer.LabelWidth;//标签宽度
             pkgTmpLabel.Height = customer.LabelHeight;//标签高度
@@ -1163,7 +1182,11 @@ namespace AHLabelPrint
                     {
                         lblParam = labelParamList[k];
                         //模板里自带默认值，直接采用，无需再设定值；
-                        if (!string.IsNullOrEmpty(lblParam.Value)) continue;
+                        //if (!string.IsNullOrEmpty(lblParam.Value)) continue;
+                        if (!string.IsNullOrEmpty(lblParam.Value)) {
+                            pkgLabel.ParamValues.Add(lblParam.Name, lblParam.Value);
+                            continue;
+                        }
 
                         if (dataObj[lblParam.Name].ToString().IndexOf('●') > -1)
                         {
@@ -1276,14 +1299,16 @@ namespace AHLabelPrint
                 loadPackageQtyComboxData(this.comb_packageQty,custObj);
                 loadPackageTypeComboxData(this.comb_packagetype);
                 loadPrintRecordStateComboxData(this.comb_recordState);
-                loadPrintStateComboxData(this.comb_printState); 
+                loadPrintStateComboxData(this.comb_printState);
+                loadlabelStateComboxData(this.combo_labelstate);
                 //加载下拉框的默认值
                 this.comb_packagetype.SelectedItem = new DictionaryEntry(custObj.TemplateType, GetTemplateType(custObj.TemplateType));
 
                 DictionaryEntry recordStateSelItem = (DictionaryEntry)this.comb_recordState.SelectedItem;
                 DictionaryEntry printStateSelItem = (DictionaryEntry)this.comb_printState.SelectedItem;
+                DictionaryEntry labelStateSelItem = (DictionaryEntry)this.combo_labelstate.SelectedItem;
                 //加载打印记录
-                loadPrintRecord(this.gdvLblRecord, CustomerId, this.txt_workcode.Text, recordStateSelItem.Key.ToString(), printStateSelItem.Key.ToString(),this.dtpk_begindate.Value, this.dtpk_enddate.Value, 0);
+                loadPrintRecord(this.gdvLblRecord, CustomerId, this.txt_workcode.Text, labelStateSelItem.Key.ToString(), recordStateSelItem.Key.ToString(), printStateSelItem.Key.ToString(),this.dtpk_begindate.Value, this.dtpk_enddate.Value, 0);
             }
             else if (e.TabPageIndex == 2)
             {
@@ -1302,15 +1327,17 @@ namespace AHLabelPrint
 
                 InitOuterDGV();
                 loadPrintRecordStateComboxData(this.comb_outter_printrecordState);
-                loadPrintStateComboxData(this.comb_outter_printState); 
+                loadPrintStateComboxData(this.comb_outter_printState);
+                loadlabelStateComboxData(this.combo_outter_labelState);
                 //加载下拉框的默认值
                 this.combo_outter_packageType.SelectedItem = new DictionaryEntry(custObj.TemplateType, GetTemplateType(custObj.TemplateType));
                 DictionaryEntry recordStateSelItem = (DictionaryEntry)this.comb_outter_printrecordState.SelectedItem;
                 DictionaryEntry printStateSelItem = (DictionaryEntry)this.comb_outter_printState.SelectedItem;
+                DictionaryEntry labelStateSelItem = (DictionaryEntry)this.combo_outter_labelState.SelectedItem;
                 //初始化dgv
                 //this.dgv_outter_printRecordList
                 //加载打印记录
-                loadPrintRecord(this.dgv_outter_printRecordList, custObj.Id, this.txt_outter_search_workcode.Text, recordStateSelItem.Key.ToString(), printStateSelItem.Key.ToString(),this.dtpk_outter_begindate.Value, this.dtpk_outter_enddate.Value, 1,true);
+                loadPrintRecord(this.dgv_outter_printRecordList, custObj.Id, this.txt_outter_search_workcode.Text, labelStateSelItem.Key.ToString(), recordStateSelItem.Key.ToString(), printStateSelItem.Key.ToString(),this.dtpk_outter_begindate.Value, this.dtpk_outter_enddate.Value, 1,true);
             }
             else 
             {
@@ -1375,7 +1402,7 @@ namespace AHLabelPrint
             dgv_outter_printdetail.Columns.Add(dgvCol);
         }
 
-        private void loadPrintRecord(DataGridView dgvObj, string customerId,string workcode,string recordState,string printedState,DateTime beginDate, DateTime endDate,int OnlyParent,bool IsOutter=false)
+        private void loadPrintRecord(DataGridView dgvObj, string customerId,string workcode,string labelState,string recordState,string printedState,DateTime beginDate, DateTime endDate,int OnlyParent,bool IsOutter=false)
         {
             dgvObj.Rows.Clear();
 
@@ -1385,6 +1412,7 @@ namespace AHLabelPrint
             JObject reqData = new JObject();
             reqData.Add("CustomerId", customerId);
             reqData.Add("Workcode", workcode);
+            reqData.Add("labelState", labelState);//标签状态：全部,已打印,已作废 等
             reqData.Add("IsMapped", recordState);
             reqData.Add("IsPrinted", printedState);
             reqData.Add("BeginDate", beginDate);
@@ -1447,6 +1475,12 @@ namespace AHLabelPrint
                 case "reprint":
                     tempString = "可补打";
                     break;
+                case "reprinted":
+                    tempString = "已补打";
+                    break;
+                case "disable":
+                    tempString = "已作废";
+                    break;
                 default:
                     tempString = "";
                     break;
@@ -1458,8 +1492,9 @@ namespace AHLabelPrint
         {
             DictionaryEntry recordStateSelItem = (DictionaryEntry)this.comb_recordState.SelectedItem;
             DictionaryEntry printStateSelItem = (DictionaryEntry)this.comb_printState.SelectedItem;
+            DictionaryEntry labelStateSelItem = (DictionaryEntry)this.combo_labelstate.SelectedItem;
             //加载打印记录
-            loadPrintRecord(this.gdvLblRecord, CustomerId, this.txt_search_workcode.Text, recordStateSelItem.Key.ToString(), printStateSelItem.Key.ToString(),this.dtpk_begindate.Value, this.dtpk_enddate.Value, 0) ;
+            loadPrintRecord(this.gdvLblRecord, CustomerId, this.txt_search_workcode.Text, labelStateSelItem.Key.ToString(), recordStateSelItem.Key.ToString(), printStateSelItem.Key.ToString(),this.dtpk_begindate.Value, this.dtpk_enddate.Value, 0) ;
         }
 
         private void chk_merginprint_CheckStateChanged(object sender, EventArgs e)
@@ -1740,8 +1775,9 @@ namespace AHLabelPrint
         {
             DictionaryEntry recordStateSelItem = (DictionaryEntry)this.comb_outter_printrecordState.SelectedItem;
             DictionaryEntry printStateSelItem = (DictionaryEntry)this.comb_outter_printState.SelectedItem;
+            DictionaryEntry labelStateSelItem = (DictionaryEntry)this.combo_outter_labelState.SelectedItem;
             //加载打印记录
-            loadPrintRecord(this.dgv_outter_printRecordList, custObj.Id, this.txt_outter_search_workcode.Text, recordStateSelItem.Key.ToString(), printStateSelItem.Key.ToString(),this.dtpk_outter_begindate.Value, this.dtpk_outter_enddate.Value, 1,true);
+            loadPrintRecord(this.dgv_outter_printRecordList, custObj.Id, this.txt_outter_search_workcode.Text, labelStateSelItem.Key.ToString(), recordStateSelItem.Key.ToString(), printStateSelItem.Key.ToString(),this.dtpk_outter_begindate.Value, this.dtpk_outter_enddate.Value, 1,true);
         }
 
         private void dgv_outter_printdetail_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
@@ -2333,7 +2369,13 @@ namespace AHLabelPrint
                     checkPass = false;
                     break;
                 }
-                if(applyType == "disable")
+                if (selRow.Cells[10].Value.ToString() == "已作废")
+                {
+                    MessageBox.Show("选中标签已作废！");
+                    checkPass = false;
+                    break;
+                }
+                if (applyType == "disable")
                 {
                     if (isLabelBeforeOperation(selRow.Cells[3].Value.ToString()))
                     {

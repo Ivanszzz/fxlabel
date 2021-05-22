@@ -124,6 +124,8 @@
             this.PRCreateTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.combo_labelstate = new System.Windows.Forms.ComboBox();
+            this.label41 = new System.Windows.Forms.Label();
             this.dtpk_enddate = new System.Windows.Forms.DateTimePicker();
             this.dtpk_begindate = new System.Windows.Forms.DateTimePicker();
             this.label37 = new System.Windows.Forms.Label();
@@ -189,13 +191,14 @@
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.combo_outter_labelState = new System.Windows.Forms.ComboBox();
+            this.label42 = new System.Windows.Forms.Label();
             this.dtpk_outter_enddate = new System.Windows.Forms.DateTimePicker();
             this.dtpk_outter_begindate = new System.Windows.Forms.DateTimePicker();
             this.label38 = new System.Windows.Forms.Label();
             this.label39 = new System.Windows.Forms.Label();
             this.btn_outter_disableapply = new System.Windows.Forms.Button();
             this.btn_outter_reprintapply = new System.Windows.Forms.Button();
-            this.btn_outter_disable = new System.Windows.Forms.Button();
             this.btn_outter_reprint = new System.Windows.Forms.Button();
             this.btn_outter_selectedOK = new System.Windows.Forms.Button();
             this.btn_outter_search = new System.Windows.Forms.Button();
@@ -1150,7 +1153,7 @@
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Red;
             this.Column7.DefaultCellStyle = dataGridViewCellStyle3;
-            this.Column7.HeaderText = "申请状态";
+            this.Column7.HeaderText = "标签状态";
             this.Column7.Name = "Column7";
             this.Column7.ReadOnly = true;
             this.Column7.Width = 80;
@@ -1178,6 +1181,8 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.combo_labelstate);
+            this.groupBox4.Controls.Add(this.label41);
             this.groupBox4.Controls.Add(this.dtpk_enddate);
             this.groupBox4.Controls.Add(this.dtpk_begindate);
             this.groupBox4.Controls.Add(this.label37);
@@ -1201,16 +1206,33 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "查询";
             // 
+            // combo_labelstate
+            // 
+            this.combo_labelstate.FormattingEnabled = true;
+            this.combo_labelstate.Location = new System.Drawing.Point(493, 10);
+            this.combo_labelstate.Name = "combo_labelstate";
+            this.combo_labelstate.Size = new System.Drawing.Size(65, 20);
+            this.combo_labelstate.TabIndex = 10;
+            // 
+            // label41
+            // 
+            this.label41.AutoSize = true;
+            this.label41.Location = new System.Drawing.Point(434, 15);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(59, 12);
+            this.label41.TabIndex = 9;
+            this.label41.Text = "标签状态:";
+            // 
             // dtpk_enddate
             // 
-            this.dtpk_enddate.Location = new System.Drawing.Point(576, 9);
+            this.dtpk_enddate.Location = new System.Drawing.Point(727, 10);
             this.dtpk_enddate.Name = "dtpk_enddate";
             this.dtpk_enddate.Size = new System.Drawing.Size(112, 21);
             this.dtpk_enddate.TabIndex = 8;
             // 
             // dtpk_begindate
             // 
-            this.dtpk_begindate.Location = new System.Drawing.Point(452, 9);
+            this.dtpk_begindate.Location = new System.Drawing.Point(605, 10);
             this.dtpk_begindate.Name = "dtpk_begindate";
             this.dtpk_begindate.Size = new System.Drawing.Size(112, 21);
             this.dtpk_begindate.TabIndex = 8;
@@ -1218,7 +1240,7 @@
             // label37
             // 
             this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(566, 13);
+            this.label37.Location = new System.Drawing.Point(717, 14);
             this.label37.Name = "label37";
             this.label37.Size = new System.Drawing.Size(11, 12);
             this.label37.TabIndex = 6;
@@ -1227,7 +1249,7 @@
             // label36
             // 
             this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(416, 15);
+            this.label36.Location = new System.Drawing.Point(568, 14);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(35, 12);
             this.label36.TabIndex = 6;
@@ -1236,7 +1258,7 @@
             // label34
             // 
             this.label34.AutoSize = true;
-            this.label34.Location = new System.Drawing.Point(284, 15);
+            this.label34.Location = new System.Drawing.Point(303, 15);
             this.label34.Name = "label34";
             this.label34.Size = new System.Drawing.Size(59, 12);
             this.label34.TabIndex = 6;
@@ -1247,7 +1269,7 @@
             this.comb_printState.FormattingEnabled = true;
             this.comb_printState.Items.AddRange(new object[] {
             "2000"});
-            this.comb_printState.Location = new System.Drawing.Point(345, 11);
+            this.comb_printState.Location = new System.Drawing.Point(363, 11);
             this.comb_printState.Name = "comb_printState";
             this.comb_printState.Size = new System.Drawing.Size(65, 20);
             this.comb_printState.TabIndex = 7;
@@ -1255,25 +1277,25 @@
             // label32
             // 
             this.label32.AutoSize = true;
-            this.label32.Location = new System.Drawing.Point(181, 15);
+            this.label32.Location = new System.Drawing.Point(178, 15);
             this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(35, 12);
+            this.label32.Size = new System.Drawing.Size(59, 12);
             this.label32.TabIndex = 6;
-            this.label32.Text = "状态:";
+            this.label32.Text = "记录状态:";
             // 
             // comb_recordState
             // 
             this.comb_recordState.FormattingEnabled = true;
             this.comb_recordState.Items.AddRange(new object[] {
             "2000"});
-            this.comb_recordState.Location = new System.Drawing.Point(217, 11);
+            this.comb_recordState.Location = new System.Drawing.Point(237, 11);
             this.comb_recordState.Name = "comb_recordState";
             this.comb_recordState.Size = new System.Drawing.Size(61, 20);
             this.comb_recordState.TabIndex = 7;
             // 
             // btn_disableApply
             // 
-            this.btn_disableApply.Location = new System.Drawing.Point(969, 10);
+            this.btn_disableApply.Location = new System.Drawing.Point(1117, 10);
             this.btn_disableApply.Name = "btn_disableApply";
             this.btn_disableApply.Size = new System.Drawing.Size(79, 23);
             this.btn_disableApply.TabIndex = 2;
@@ -1283,17 +1305,18 @@
             // 
             // btn_disable
             // 
-            this.btn_disable.Location = new System.Drawing.Point(1054, 10);
+            this.btn_disable.Location = new System.Drawing.Point(1202, 10);
             this.btn_disable.Name = "btn_disable";
             this.btn_disable.Size = new System.Drawing.Size(79, 23);
             this.btn_disable.TabIndex = 2;
             this.btn_disable.Text = "单张作废";
             this.btn_disable.UseVisualStyleBackColor = true;
+            this.btn_disable.Visible = false;
             this.btn_disable.Click += new System.EventHandler(this.btn_disable_Click);
             // 
             // btn_reprintApplay
             // 
-            this.btn_reprintApplay.Location = new System.Drawing.Point(770, 9);
+            this.btn_reprintApplay.Location = new System.Drawing.Point(918, 9);
             this.btn_reprintApplay.Name = "btn_reprintApplay";
             this.btn_reprintApplay.Size = new System.Drawing.Size(106, 23);
             this.btn_reprintApplay.TabIndex = 2;
@@ -1303,7 +1326,7 @@
             // 
             // btn_reprint
             // 
-            this.btn_reprint.Location = new System.Drawing.Point(882, 10);
+            this.btn_reprint.Location = new System.Drawing.Point(1030, 10);
             this.btn_reprint.Name = "btn_reprint";
             this.btn_reprint.Size = new System.Drawing.Size(81, 23);
             this.btn_reprint.TabIndex = 2;
@@ -1313,7 +1336,7 @@
             // 
             // btn_SearchRecord
             // 
-            this.btn_SearchRecord.Location = new System.Drawing.Point(697, 9);
+            this.btn_SearchRecord.Location = new System.Drawing.Point(845, 9);
             this.btn_SearchRecord.Name = "btn_SearchRecord";
             this.btn_SearchRecord.Size = new System.Drawing.Size(65, 23);
             this.btn_SearchRecord.TabIndex = 2;
@@ -1371,7 +1394,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tableLayoutPanel3);
             this.splitContainer1.Size = new System.Drawing.Size(1314, 589);
-            this.splitContainer1.SplitterDistance = 273;
+            this.splitContainer1.SplitterDistance = 287;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 2;
             // 
@@ -1381,7 +1404,7 @@
             this.groupBox5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox5.Location = new System.Drawing.Point(0, 0);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(1314, 273);
+            this.groupBox5.Size = new System.Drawing.Size(1314, 287);
             this.groupBox5.TabIndex = 2;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "标签打印";
@@ -1421,7 +1444,7 @@
             // splitContainer4.Panel2
             // 
             this.splitContainer4.Panel2.Controls.Add(this.grpbox_outter);
-            this.splitContainer4.Size = new System.Drawing.Size(1308, 253);
+            this.splitContainer4.Size = new System.Drawing.Size(1308, 267);
             this.splitContainer4.SplitterDistance = 784;
             this.splitContainer4.SplitterWidth = 10;
             this.splitContainer4.TabIndex = 15;
@@ -1645,7 +1668,7 @@
             this.grpbox_outter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpbox_outter.Location = new System.Drawing.Point(0, 0);
             this.grpbox_outter.Name = "grpbox_outter";
-            this.grpbox_outter.Size = new System.Drawing.Size(514, 253);
+            this.grpbox_outter.Size = new System.Drawing.Size(514, 267);
             this.grpbox_outter.TabIndex = 0;
             this.grpbox_outter.TabStop = false;
             this.grpbox_outter.Text = "其他输入";
@@ -1661,19 +1684,19 @@
             this.tableLayoutPanel3.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 3;
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 13.60544F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 86.39455F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 17.29323F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 82.70676F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(1314, 311);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(1314, 297);
             this.tableLayoutPanel3.TabIndex = 0;
             // 
             // groupBox7
             // 
             this.groupBox7.Controls.Add(this.dgv_outter_printRecordList);
             this.groupBox7.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox7.Location = new System.Drawing.Point(3, 42);
+            this.groupBox7.Location = new System.Drawing.Point(3, 50);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(1308, 245);
+            this.groupBox7.Size = new System.Drawing.Size(1308, 223);
             this.groupBox7.TabIndex = 2;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "父标签打印记录";
@@ -1706,7 +1729,7 @@
             this.dgv_outter_printRecordList.Name = "dgv_outter_printRecordList";
             this.dgv_outter_printRecordList.ReadOnly = true;
             this.dgv_outter_printRecordList.RowTemplate.Height = 23;
-            this.dgv_outter_printRecordList.Size = new System.Drawing.Size(1302, 225);
+            this.dgv_outter_printRecordList.Size = new System.Drawing.Size(1302, 203);
             this.dgv_outter_printRecordList.TabIndex = 0;
             // 
             // Column12
@@ -1781,7 +1804,7 @@
             // 
             // Column8
             // 
-            this.Column8.HeaderText = "申请状态";
+            this.Column8.HeaderText = "标签状态";
             this.Column8.Name = "Column8";
             this.Column8.ReadOnly = true;
             // 
@@ -1827,13 +1850,14 @@
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.combo_outter_labelState);
+            this.groupBox8.Controls.Add(this.label42);
             this.groupBox8.Controls.Add(this.dtpk_outter_enddate);
             this.groupBox8.Controls.Add(this.dtpk_outter_begindate);
             this.groupBox8.Controls.Add(this.label38);
             this.groupBox8.Controls.Add(this.label39);
             this.groupBox8.Controls.Add(this.btn_outter_disableapply);
             this.groupBox8.Controls.Add(this.btn_outter_reprintapply);
-            this.groupBox8.Controls.Add(this.btn_outter_disable);
             this.groupBox8.Controls.Add(this.btn_outter_reprint);
             this.groupBox8.Controls.Add(this.btn_outter_selectedOK);
             this.groupBox8.Controls.Add(this.btn_outter_search);
@@ -1846,15 +1870,32 @@
             this.groupBox8.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox8.Location = new System.Drawing.Point(3, 3);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(1308, 33);
+            this.groupBox8.Size = new System.Drawing.Size(1308, 41);
             this.groupBox8.TabIndex = 3;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "查询";
             // 
+            // combo_outter_labelState
+            // 
+            this.combo_outter_labelState.FormattingEnabled = true;
+            this.combo_outter_labelState.Location = new System.Drawing.Point(491, 10);
+            this.combo_outter_labelState.Name = "combo_outter_labelState";
+            this.combo_outter_labelState.Size = new System.Drawing.Size(65, 20);
+            this.combo_outter_labelState.TabIndex = 1;
+            // 
+            // label42
+            // 
+            this.label42.AutoSize = true;
+            this.label42.Location = new System.Drawing.Point(432, 13);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(59, 12);
+            this.label42.TabIndex = 13;
+            this.label42.Text = "标签状态:";
+            // 
             // dtpk_outter_enddate
             // 
             this.dtpk_outter_enddate.CustomFormat = "yyyy-MM-dd";
-            this.dtpk_outter_enddate.Location = new System.Drawing.Point(561, 10);
+            this.dtpk_outter_enddate.Location = new System.Drawing.Point(721, 9);
             this.dtpk_outter_enddate.Name = "dtpk_outter_enddate";
             this.dtpk_outter_enddate.Size = new System.Drawing.Size(112, 21);
             this.dtpk_outter_enddate.TabIndex = 11;
@@ -1862,7 +1903,7 @@
             // dtpk_outter_begindate
             // 
             this.dtpk_outter_begindate.CustomFormat = "yyyy-MM-dd";
-            this.dtpk_outter_begindate.Location = new System.Drawing.Point(437, 10);
+            this.dtpk_outter_begindate.Location = new System.Drawing.Point(597, 9);
             this.dtpk_outter_begindate.Name = "dtpk_outter_begindate";
             this.dtpk_outter_begindate.Size = new System.Drawing.Size(112, 21);
             this.dtpk_outter_begindate.TabIndex = 12;
@@ -1870,7 +1911,7 @@
             // label38
             // 
             this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(551, 14);
+            this.label38.Location = new System.Drawing.Point(711, 13);
             this.label38.Name = "label38";
             this.label38.Size = new System.Drawing.Size(11, 12);
             this.label38.TabIndex = 9;
@@ -1879,7 +1920,7 @@
             // label39
             // 
             this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(401, 14);
+            this.label39.Location = new System.Drawing.Point(561, 13);
             this.label39.Name = "label39";
             this.label39.Size = new System.Drawing.Size(35, 12);
             this.label39.TabIndex = 10;
@@ -1887,7 +1928,7 @@
             // 
             // btn_outter_disableapply
             // 
-            this.btn_outter_disableapply.Location = new System.Drawing.Point(930, 9);
+            this.btn_outter_disableapply.Location = new System.Drawing.Point(1085, 9);
             this.btn_outter_disableapply.Name = "btn_outter_disableapply";
             this.btn_outter_disableapply.Size = new System.Drawing.Size(75, 23);
             this.btn_outter_disableapply.TabIndex = 6;
@@ -1897,7 +1938,7 @@
             // 
             // btn_outter_reprintapply
             // 
-            this.btn_outter_reprintapply.Location = new System.Drawing.Point(823, 9);
+            this.btn_outter_reprintapply.Location = new System.Drawing.Point(978, 9);
             this.btn_outter_reprintapply.Name = "btn_outter_reprintapply";
             this.btn_outter_reprintapply.Size = new System.Drawing.Size(102, 23);
             this.btn_outter_reprintapply.TabIndex = 6;
@@ -1905,20 +1946,9 @@
             this.btn_outter_reprintapply.UseVisualStyleBackColor = true;
             this.btn_outter_reprintapply.Click += new System.EventHandler(this.btn_outter_reprintapply_Click);
             // 
-            // btn_outter_disable
-            // 
-            this.btn_outter_disable.Location = new System.Drawing.Point(1093, 9);
-            this.btn_outter_disable.Name = "btn_outter_disable";
-            this.btn_outter_disable.Size = new System.Drawing.Size(76, 23);
-            this.btn_outter_disable.TabIndex = 2;
-            this.btn_outter_disable.Text = "作废";
-            this.btn_outter_disable.UseVisualStyleBackColor = true;
-            this.btn_outter_disable.Visible = false;
-            this.btn_outter_disable.Click += new System.EventHandler(this.btn_outter_disable_Click);
-            // 
             // btn_outter_reprint
             // 
-            this.btn_outter_reprint.Location = new System.Drawing.Point(1011, 9);
+            this.btn_outter_reprint.Location = new System.Drawing.Point(1166, 9);
             this.btn_outter_reprint.Name = "btn_outter_reprint";
             this.btn_outter_reprint.Size = new System.Drawing.Size(76, 23);
             this.btn_outter_reprint.TabIndex = 2;
@@ -1928,7 +1958,7 @@
             // 
             // btn_outter_selectedOK
             // 
-            this.btn_outter_selectedOK.Location = new System.Drawing.Point(740, 9);
+            this.btn_outter_selectedOK.Location = new System.Drawing.Point(895, 9);
             this.btn_outter_selectedOK.Name = "btn_outter_selectedOK";
             this.btn_outter_selectedOK.Size = new System.Drawing.Size(76, 23);
             this.btn_outter_selectedOK.TabIndex = 2;
@@ -1938,7 +1968,7 @@
             // 
             // btn_outter_search
             // 
-            this.btn_outter_search.Location = new System.Drawing.Point(681, 9);
+            this.btn_outter_search.Location = new System.Drawing.Point(836, 9);
             this.btn_outter_search.Name = "btn_outter_search";
             this.btn_outter_search.Size = new System.Drawing.Size(54, 23);
             this.btn_outter_search.TabIndex = 2;
@@ -1949,7 +1979,7 @@
             // label31
             // 
             this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(275, 15);
+            this.label31.Location = new System.Drawing.Point(299, 13);
             this.label31.Name = "label31";
             this.label31.Size = new System.Drawing.Size(59, 12);
             this.label31.TabIndex = 0;
@@ -1958,11 +1988,11 @@
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(177, 17);
+            this.label19.Location = new System.Drawing.Point(177, 14);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(35, 12);
+            this.label19.Size = new System.Drawing.Size(59, 12);
             this.label19.TabIndex = 0;
-            this.label19.Text = "状态:";
+            this.label19.Text = "记录状态:";
             // 
             // txt_outter_search_workcode
             // 
@@ -1985,7 +2015,7 @@
             this.comb_outter_printState.FormattingEnabled = true;
             this.comb_outter_printState.Items.AddRange(new object[] {
             "2000"});
-            this.comb_outter_printState.Location = new System.Drawing.Point(334, 11);
+            this.comb_outter_printState.Location = new System.Drawing.Point(359, 9);
             this.comb_outter_printState.Name = "comb_outter_printState";
             this.comb_outter_printState.Size = new System.Drawing.Size(65, 20);
             this.comb_outter_printState.TabIndex = 5;
@@ -1995,7 +2025,7 @@
             this.comb_outter_printrecordState.FormattingEnabled = true;
             this.comb_outter_printrecordState.Items.AddRange(new object[] {
             "2000"});
-            this.comb_outter_printrecordState.Location = new System.Drawing.Point(212, 12);
+            this.comb_outter_printrecordState.Location = new System.Drawing.Point(236, 10);
             this.comb_outter_printrecordState.Name = "comb_outter_printrecordState";
             this.comb_outter_printrecordState.Size = new System.Drawing.Size(58, 20);
             this.comb_outter_printrecordState.TabIndex = 5;
@@ -2003,7 +2033,7 @@
             // label_outuser
             // 
             this.label_outuser.AutoSize = true;
-            this.label_outuser.Location = new System.Drawing.Point(3, 290);
+            this.label_outuser.Location = new System.Drawing.Point(3, 276);
             this.label_outuser.Name = "label_outuser";
             this.label_outuser.Size = new System.Drawing.Size(47, 12);
             this.label_outuser.TabIndex = 4;
@@ -2168,12 +2198,10 @@
 		private System.Windows.Forms.Button btn_outter_selectedOK;
 		private System.Windows.Forms.Label label19;
 		private System.Windows.Forms.ComboBox comb_outter_printrecordState;
-		private System.Windows.Forms.Label label32;
 		private System.Windows.Forms.ComboBox comb_recordState;
 		private System.Windows.Forms.Label lbl_username;
 		private System.Windows.Forms.Button btn_disable;
 		private System.Windows.Forms.Button btn_reprint;
-		private System.Windows.Forms.Button btn_outter_disable;
 		private System.Windows.Forms.Button btn_outter_reprint;
 		private System.Windows.Forms.Button btn_packageQtyTemp;
 		private System.Windows.Forms.Button btn_outter_packageQtyTemp;
@@ -2197,23 +2225,6 @@
 		private System.Windows.Forms.Label label39;
 		private System.Windows.Forms.CheckedListBox chkworkcodelist;
 		private System.Windows.Forms.Label label40;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column12;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn13;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn14;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn15;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column9;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.DataGridView gdv_customer;
         private System.Windows.Forms.DataGridViewTextBoxColumn Id;
@@ -2241,6 +2252,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn enableprintqty;
         private System.Windows.Forms.DataGridViewTextBoxColumn gongxu;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.Label label_user;
+        private System.Windows.Forms.Label label_outuser;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column11;
         private System.Windows.Forms.DataGridViewTextBoxColumn PrintRecordId;
         private System.Windows.Forms.DataGridViewTextBoxColumn PRCustomerId;
@@ -2255,8 +2268,28 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn PRCreator;
         private System.Windows.Forms.DataGridViewTextBoxColumn PRCreateTime;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column10;
-        private System.Windows.Forms.Label label_user;
-        private System.Windows.Forms.Label label_outuser;
+        private System.Windows.Forms.ComboBox combo_labelstate;
+        private System.Windows.Forms.Label label41;
+        private System.Windows.Forms.Label label32;
+        private System.Windows.Forms.ComboBox combo_outter_labelState;
+        private System.Windows.Forms.Label label42;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column12;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn13;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn14;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn15;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column9;
     }
 }
 

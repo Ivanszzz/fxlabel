@@ -67,7 +67,6 @@ namespace AHLabelPrint
             // 
             this.labelinput_textBox.Location = new System.Drawing.Point(77, 10);
             this.labelinput_textBox.Name = "labelinput_textBox";
-            this.labelinput_textBox.ShortcutsEnabled = false;
             this.labelinput_textBox.Size = new System.Drawing.Size(621, 21);
             this.labelinput_textBox.TabIndex = 0;
             this.labelinput_textBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.labelinput_textBox_KeyDown);
